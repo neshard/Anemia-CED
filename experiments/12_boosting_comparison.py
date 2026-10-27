@@ -27,6 +27,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.ticker import MaxNLocator  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 from _common import ROOT, start  # noqa: E402
@@ -206,6 +207,7 @@ for target, t in TARGETS.items():
         ax.errorbar(d["point"], y, xerr=[d["point"] - d["ci_low"], d["ci_high"] - d["point"]], fmt="o", color="#3987e5",
                     ecolor="#3987e5", ms=6, lw=2, capsize=0)
         ax.set_yticks(y, [f"vs {LABELS[v]}" for v in d["versus"]])
+        ax.xaxis.set_major_locator(MaxNLocator(nbins=4))
         word = "reduction" if quantity(metric) == "reduction" else "difference"
         ax.set_title(f"{metric.upper().replace('_', '-')} {word}", loc="left", fontsize=9)
         style(ax)
@@ -219,7 +221,7 @@ for target, t in TARGETS.items():
     fig, axes = plt.subplots(1, len(t["box"]), figsize=(4.2 * len(t["box"]), 3.0))
     for ax, metric in zip(axes, t["box"], strict=True):
         per_rep = [[rb.points[(m, r)][metric] for r in rb.repeats] for m in CANDS]
-        ax.boxplot(per_rep, widths=0.5, medianprops={"color": "#3987e5", "lw": 2},
+        ax.boxplot(per_rep, widths=0.5, showfliers=False, medianprops={"color": "#3987e5", "lw": 2},
                    boxprops={"color": "#52514e"}, whiskerprops={"color": "#52514e"}, capprops={"color": "#52514e"})
         for i, vals in enumerate(per_rep, start=1):
             ax.scatter(np.full(len(vals), i), vals, s=14, color="#52514e", zorder=3)

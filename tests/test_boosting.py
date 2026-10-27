@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -147,8 +148,10 @@ def test_adaboost_has_no_explainer_and_no_fallback(small: dict, target: str) -> 
 
 def test_selection_rule_file_is_locked_and_consistent() -> None:
     rule = load_rule()
-    assert rule["status"] == "locked" and rule["locked_on"]
-    assert rule["candidates"] == list(BOOSTING_CANDIDATES) and rule["preferred"] == "xgboost"
+    assert rule["status"] == "locked" and rule["locked_on"] and rule["version"] == 2
+    # version 2 (2026-10-28): no preferred model, the best eligible point estimate is selected
+    assert rule["candidates"] == list(BOOSTING_CANDIDATES) and rule["preferred"] is None
+    assert rule["choice"] == "best_point_estimate"
     assert rule["targets"]["hb"] == {"metric": "mae", "direction": "lower_is_better"}
     assert rule["targets"]["ced"] == {"metric": "auc_roc", "direction": "higher_is_better"}
     assert rule["hb_explanation_gate"]["enable_on"] == ["supported"]
@@ -161,9 +164,14 @@ def test_selection_rule_file_is_locked_and_consistent() -> None:
 
 
 def _rule() -> dict:
+    """Version 1 rule (XGBoost preferred inside the equivalence group), still applied side by side in 14."""
     return {"candidates": list(BOOSTING_CANDIDATES), "preferred": "xgboost", "status": "locked",
             "targets": {"ced": {"metric": "auc_roc", "direction": "higher_is_better"},
                         "hb": {"metric": "mae", "direction": "lower_is_better"}}}
+
+
+def _rule_v2() -> dict:
+    return {**_rule(), "preferred": None, "choice": "best_point_estimate"}
 
 
 def _ci(pairs: dict[tuple[str, str], tuple[float, float]]) -> dict[tuple[str, str], tuple[float, float]]:
@@ -352,3 +360,29 @@ def test_old_database_gets_algorithm_columns(tmp_path: Path) -> None:
     cols = SessionStore(path).column_names()
     assert {"hb_algorithm", "ced_algorithm"} <= set(cols["predictions"])
     assert {"n_under5", "income", "food_taboo"} <= set(cols["inputs"])
+
+
+# --- version 2 rule (2026-10-28) ---------------------------------------------------------
+
+def test_v2_selects_the_best_point_estimate_even_inside_an_equivalence_group() -> None:
+    points = {"xgboost": 0.76, "gbm": 0.78, "lightgbm": 0.70, "catboost": 0.70, "adaboost": 0.70}
+    res = select_model(_rule_v2(), "ced", points, _ci({("gbm", "xgboost"): (-0.01, 0.05)}), ALL_OK, COST)
+    assert res.selected == "gbm" and "xgboost" in res.equivalence_group
+    assert "not statistically established" in res.reason
+    v1 = select_model(_rule(), "ced", points, _ci({("gbm", "xgboost"): (-0.01, 0.05)}), ALL_OK, COST)
+    assert v1.selected == "xgboost"  # the superseded rule would have kept XGBoost
+
+
+def test_v2_ignores_cost_and_never_selects_an_ineligible_model() -> None:
+    points = {"xgboost": 1.10, "gbm": 1.05, "lightgbm": 1.20, "catboost": 1.30, "adaboost": 0.90}
+    eligible = {**ALL_OK, "adaboost": False}
+    res = select_model(_rule_v2(), "hb", points, _ci({}), eligible, {**COST, "gbm": 1e9})
+    assert res.selected == "gbm"
+
+
+def test_v2_rule_must_not_name_a_preferred_model(tmp_path: Path) -> None:
+    text = (PROJECT_ROOT / "config" / "model_selection.yaml").read_text(encoding="utf-8")
+    bad = tmp_path / "rule.yaml"
+    bad.write_text(re.sub(r"(?m)^preferred: null$", "preferred: xgboost", text, count=1), encoding="utf-8")
+    with pytest.raises(SelectionRuleError, match="prefers no model"):
+        load_rule(bad)

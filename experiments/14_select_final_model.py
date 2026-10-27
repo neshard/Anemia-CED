@@ -29,6 +29,8 @@ from src.utils import library_versions
 config, hyp = start("14_select_final_model")
 assert hyp is not None
 rule = load_rule(require_locked=not config["project"].get("smoke_test"))
+# The superseded version 1 rule (commit 0cc4098) is applied side by side for transparency only.
+RULE_V1 = {**rule, "choice": "equivalence_group_preferred", "preferred": "xgboost"}
 CANDS = list(rule["candidates"])
 tables = ROOT / "results" / "tables"
 metrics = {"hb": pd.read_csv(tables / "m01_hb_boosting_metrics.csv"), "ced": pd.read_csv(tables / "m02_ced_boosting_metrics.csv")}
@@ -50,12 +52,15 @@ for target in ("hb", "ced"):
     eligible = {c: bool(e.loc[c, "eligible"]) for c in CANDS}
     cost = {c: float(load_folds(config, f"main__{target}__{c}__main")["n_tree_nodes"].median()) for c in CANDS}
     res = select_model(rule, target, points, paired_ci, eligible, cost)
+    v1 = select_model(RULE_V1, target, points, paired_ci, eligible, cost)
     results[target] = res
-    table = res.table.assign(selection_reason=res.reason, optimism_note=rule["optimism_note"].strip())
+    table = res.table.assign(selection_reason=res.reason, rule_version=rule.get("version", 1),
+                             selected_by_version1_rule=res.table["candidate"] == v1.selected,
+                             optimism_note=rule["optimism_note"].strip())
     table["eligibility_reason"] = [e.loc[c, "reason"] for c in CANDS]
     summary_rows.append(table)
     print(f"{target}: selected {res.selected} (provisional winner {res.provisional_winner}, "
-          f"group {list(res.equivalence_group)}). {res.reason}")
+          f"group {list(res.equivalence_group)}). {res.reason}. Version 1 rule would select {v1.selected}.")
 
 save_result_table(pd.concat(summary_rows, ignore_index=True), "m10_model_selection_summary", config)
 
@@ -72,6 +77,8 @@ print(f"Hb gate ({hb_sel} vs dummy_mean, MAE reduction >= 0.10): {gate['outcome'
 selection = {
     "rule_file": "config/model_selection.yaml",
     "rule_locked_on": str(rule.get("locked_on")),
+    "rule_version": rule.get("version", 1),
+    "rule_note": "version 2 set on 2026-10-28 after results were known (deviation, see CHANGELOG)",
     "computed_at": datetime.now().isoformat(timespec="seconds"),
     "seed": int(config["project"]["random_seed"]),
     "paired_bootstrap_seed": {t: int(s) for t, s in rule["paired_bootstrap_seed"].items()},

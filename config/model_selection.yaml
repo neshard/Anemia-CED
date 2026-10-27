@@ -2,17 +2,27 @@
 # Applied by src/model_selection.py select_model, a deterministic function of the tables it reads
 # (experiments/14_select_final_model.py). The Hb model and the CED model may be different algorithms.
 #
-# Locked before any of the four new boosting models (GBM, LightGBM, CatBoost, AdaBoost) was run.
-# XGBoost, baseline, Decision Tree and Random Forest results had already been seen since
-# 2026-10-18 (see CHANGELOG). Changing this file after the new models are run is a deviation.
+# VERSION 2 (2026-10-28), A DEVIATION. Version 1 was locked on 2026-10-27 in commit 0cc4098, before
+# any of the four new boosting models was run, and preferred XGBoost inside the equivalence group.
+# On 2026-10-28, AFTER all results were known (results/tables m01 to m11), the researcher instructed
+# that XGBoost must not be the reference: the boosting model with the best performance goes to the
+# dashboard, and baselines never do. Version 2 changes only step 4 (choice: best_point_estimate,
+# preferred: null). Everything else is unchanged from version 1. Because the change was made with
+# the results in view, the selection is post hoc. Both versions and their outcomes are reported
+# (results/tables/m10, CHANGELOG 2026-10-28).
 
 status: locked
-locked_on: 2026-10-27
+version: 2
+locked_on: 2026-10-28
+supersedes: "version 1, locked 2026-10-27, commit 0cc4098"
 
 # Only these five are ever selected. Decision Tree, Random Forest and the baselines
 # (mean-only, Ridge, class proportion, Logistic Regression) are never candidates.
 candidates: [xgboost, gbm, lightgbm, catboost, adaboost]
-preferred: xgboost
+# Version 2: no model is preferred. The selected model is the eligible candidate with the best
+# point estimate (step 4). Version 1 had preferred: xgboost and choice: equivalence_group_preferred.
+preferred: null
+choice: best_point_estimate
 
 targets:
   hb:
@@ -64,9 +74,12 @@ steps:
     members need not be equivalent to each other, and a candidate equivalent to a member but not
     to the provisional winner is not in the group. The group may contain the provisional winner alone.
   4_choice: >
-    If xgboost (preferred) is in the equivalence group, xgboost is selected. Otherwise the member
-    with the smallest inference_cost_proxy is selected. Remaining ties go to the earlier entry in
-    candidates.
+    Version 2: the provisional winner of step 2 is selected, whatever its algorithm. No model is
+    preferred and the inference cost proxy plays no part. The equivalence group of step 3 is still
+    computed and reported: when it has more than one member, the selected model's advantage over
+    those members is not statistically established, and the report says so.
+    (Version 1, superseded: xgboost if in the equivalence group, otherwise the smallest
+    inference_cost_proxy, then candidate order.)
 
 # Largest absolute gap between the SHAP sum plus base value and the raw model output, in g/dL for
 # Hb and in log-odds for CED. Derived, before any new model was run, from the XGBoost errors of
@@ -75,8 +88,8 @@ steps:
 additivity_tolerance: 1.0e-4
 
 # Deterministic proxy for inference cost. Wall-clock times are recorded and reported
-# (results/tables/m05) but never used here. The proxy only matters in step 4 when xgboost is not
-# in the equivalence group. Its definition must not be changed after results are seen.
+# (results/tables/m05) but never used here. In version 2 the proxy is reported only and does not
+# decide. (In version 1 it mattered in step 4 when xgboost was not in the equivalence group.)
 inference_cost_proxy:
   name: total_tree_nodes
   definition: >
@@ -110,5 +123,6 @@ hb_explanation_gate:
   enable_on: [supported]
 
 optimism_note: >
-  The selected model was chosen from five candidates on the same data, so its cross-validated
-  performance is optimistic. All five candidates are reported side by side.
+  The selected model was chosen from five candidates on the same data, and the version 2 rule was
+  set after the results were known, so its cross-validated performance is optimistic. All five
+  candidates are reported side by side, together with the version 1 selection.

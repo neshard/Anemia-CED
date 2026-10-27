@@ -1,0 +1,11 @@
+target,model,explainer,explainer_supported,fold_models_checked,max_additivity_error,tolerance,additivity_passed,max_abs_prediction_difference_vs_stored,eligible,reason
+hb,xgboost,shap.TreeExplainer,True,25,1.430511474609375e-05,0.0001,True,4.7668457092697736e-07,True,ok
+hb,gbm,shap.TreeExplainer,True,25,3.019806626980426e-14,0.0001,True,1.7763568394002505e-15,True,ok
+hb,lightgbm,shap.TreeExplainer,True,25,3.552713678800501e-14,0.0001,True,1.7763568394002505e-15,True,ok
+hb,catboost,shap.TreeExplainer,True,25,1.7763568394002505e-15,0.0001,True,1.7763568394002505e-15,True,ok
+hb,adaboost,shap.TreeExplainer,False,0,,0.0001,False,1.7763568394002505e-15,False,shap.TreeExplainer does not support AdaBoostRegressor: Model type not yet supported by TreeExplainer: <class 'sklearn.ensemble._weight_boosting.AdaBoostRegressor'>
+ced,xgboost,shap.TreeExplainer,True,25,3.337860107421875e-06,0.0001,True,2.9798889134013962e-08,True,ok
+ced,gbm,shap.TreeExplainer,True,25,7.105427357601002e-15,0.0001,True,9.71445146547012e-17,True,ok
+ced,lightgbm,shap.TreeExplainer,True,25,7.105427357601002e-15,0.0001,True,9.71445146547012e-17,True,ok
+ced,catboost,shap.TreeExplainer,True,25,5.773159728050814e-15,0.0001,True,9.71445146547012e-17,True,ok
+ced,adaboost,shap.TreeExplainer,False,0,,0.0001,False,5.551115123125783e-17,False,shap.TreeExplainer does not support AdaBoostClassifier: Model type not yet supported by TreeExplainer: <class 'sklearn.ensemble._weight_boosting.AdaBoostClassifier'>

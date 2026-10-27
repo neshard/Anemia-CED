@@ -1,0 +1,13 @@
+target,model_a,model_b,spearman_global_mean_abs_shap,mean_spearman_same_fold,min_spearman_same_fold,note
+hb,xgboost,gbm,0.9545454545454546,0.9613972078784417,0.829515062006253,AdaBoost excluded: no TreeExplainer in the installed shap (no KernelExplainer fallback).
+hb,xgboost,lightgbm,0.9545454545454546,0.9604282201110572,0.8002380598177973,AdaBoost excluded: no TreeExplainer in the installed shap (no KernelExplainer fallback).
+hb,xgboost,catboost,0.9636363636363637,0.937142857142857,0.7809523809523811,AdaBoost excluded: no TreeExplainer in the installed shap (no KernelExplainer fallback).
+hb,gbm,lightgbm,1.0,0.9837504047935238,0.9333333333333333,AdaBoost excluded: no TreeExplainer in the installed shap (no KernelExplainer fallback).
+hb,gbm,catboost,0.9272727272727275,0.9110973247481443,0.5367450401216932,AdaBoost excluded: no TreeExplainer in the installed shap (no KernelExplainer fallback).
+hb,lightgbm,catboost,0.9272727272727275,0.9197368153386128,0.5855400437691198,AdaBoost excluded: no TreeExplainer in the installed shap (no KernelExplainer fallback).
+ced,xgboost,gbm,0.9839314453383708,0.9532623751207163,0.8392740627357383,AdaBoost excluded: no TreeExplainer in the installed shap (no KernelExplainer fallback).
+ced,xgboost,lightgbm,1.0,0.9676157752673709,0.8880690663831651,AdaBoost excluded: no TreeExplainer in the installed shap (no KernelExplainer fallback).
+ced,xgboost,catboost,0.9634703196347033,0.9258616533123503,0.8197560612767679,AdaBoost excluded: no TreeExplainer in the installed shap (no KernelExplainer fallback).
+ced,gbm,lightgbm,0.9839314453383707,0.956953707728765,0.8929294694000403,AdaBoost excluded: no TreeExplainer in the installed shap (no KernelExplainer fallback).
+ced,gbm,catboost,0.9747358243539002,0.9268590986679893,0.7612020568998559,AdaBoost excluded: no TreeExplainer in the installed shap (no KernelExplainer fallback).
+ced,lightgbm,catboost,0.9634703196347033,0.944931471918961,0.8099970605472825,AdaBoost excluded: no TreeExplainer in the installed shap (no KernelExplainer fallback).

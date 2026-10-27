@@ -1,0 +1,9 @@
+canary,model,value,limit,passed
+too_good_hb_r2,gbm,-0.01799658161312494,0.5,True
+too_good_hb_r2,lightgbm,-0.02372215052955289,0.5,True
+too_good_hb_r2,catboost,-0.027669680964737077,0.5,True
+too_good_hb_r2,adaboost,-0.008140281346974376,0.5,True
+too_good_ced_auc_roc,gbm,0.765747687486818,0.9,True
+too_good_ced_auc_roc,lightgbm,0.7711711711711711,0.9,True
+too_good_ced_auc_roc,catboost,0.7648317213534604,0.9,True
+too_good_ced_auc_roc,adaboost,0.7647322908192474,0.9,True

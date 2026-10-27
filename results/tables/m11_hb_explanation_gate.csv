@@ -1,0 +1,2 @@
+component,criterion,rule,point,ci_low,ci_high,ci_level,point_min,point_max,n_repetitions,p_one_sided,outcome,model,verdict,hb_explanation_enabled
+mae reduction vs dummy_mean,>= 0.1,point_and_ci,0.002435427135055024,-0.02174700341888801,0.025831732836124145,0.95,-0.020593938216267982,0.009959420493468318,5,1.0,fail,xgboost,not_supported,False

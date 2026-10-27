@@ -1,2 +1,2 @@
-label,rule,brier_uncalibrated_minus_platt,ci_low,ci_high,dashboard_uses
-"exploratory, pre-specified (proposal 2.8 and 3.6)",platt only if Brier improvement 95% CI lower bound > 0,-0.00155,-0.00359,0.0004,uncalibrated probability
+label,rule,brier_uncalibrated_minus_platt,ci_low,ci_high,dashboard_uses,model
+"exploratory, pre-specified (proposal 2.8 and 3.6)",platt only if Brier improvement 95% CI lower bound > 0,-0.00155,-0.00359,0.0004,uncalibrated probability,xgboost

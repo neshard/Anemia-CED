@@ -1,0 +1,162 @@
+2026-10-27 23:38:25,976 INFO anemia_ced: Library versions written to D:\ANEMIA-CED\anemia_ced_screening\reports\library_versions.json
+2026-10-27 23:38:25,983 INFO anemia_ced: seed=42
+2026-10-27 23:38:25,983 INFO anemia_ced: outer CV=5 folds x 5 repeats (stratified on anemia class x CED)
+2026-10-27 23:38:25,983 INFO anemia_ced: inner CV=3 folds (tuning and thresholds), min stratum=5
+2026-10-27 23:38:25,983 INFO anemia_ced: tuning=Optuna tpe, 30 trials for every tuned model, objective={'regression': 'mae', 'classification': 'roc_auc'}
+2026-10-27 23:38:25,983 INFO anemia_ced: features=per fold, forced ['prepreg_weight', 'anc_visits', 'hfias_score'] plus best of the rest, k=7, RF 300 trees
+2026-10-27 23:38:25,983 INFO anemia_ced: thresholds: Hb flags 70% of true cases, CED youden plus sensitivity [0.8, 0.9]
+2026-10-27 23:38:25,984 INFO anemia_ced: bootstrap=2000 resamples per repetition, CI=0.95
+2026-10-27 23:38:25,984 INFO anemia_ced: versions: python 3.11.6, numpy 1.26.4, pandas 2.2.3, scipy 1.13.1, sklearn 1.5.2, imblearn 0.12.4, xgboost 2.1.3, lightgbm 4.5.0, catboost 1.2.7, shap 0.46.0, smogn unknown, optuna 4.1.0, statsmodels 0.14.4, matplotlib 3.9.2, yaml 6.0.2, joblib 1.4.2, streamlit 1.40.1
+2026-10-27 23:38:26,053 INFO src.cleaning: Cleaning done: 418 of 420 rows usable
+2026-10-27 23:38:32,641 INFO src.nested_cv: [canary_permutation__hb__xgboost__permuted] fold 1/5 done (r0 f0), elapsed 7s, about 26s left
+2026-10-27 23:38:32,641 INFO src.nested_cv: [canary_permutation__hb__xgboost__permuted] fold 2/5 done (r0 f1), elapsed 7s, about 10s left
+2026-10-27 23:38:32,641 INFO src.nested_cv: [canary_permutation__hb__xgboost__permuted] fold 3/5 done (r0 f2), elapsed 7s, about 4s left
+2026-10-27 23:38:32,641 INFO src.nested_cv: [canary_permutation__hb__xgboost__permuted] fold 4/5 done (r0 f3), elapsed 7s, about 2s left
+2026-10-27 23:38:32,641 INFO src.nested_cv: [canary_permutation__hb__xgboost__permuted] fold 5/5 done (r0 f4), elapsed 7s, about 0s left
+2026-10-27 23:38:37,927 INFO src.nested_cv: [canary_permutation__ced__xgboost__permuted] fold 1/5 done (r0 f0), elapsed 5s, about 21s left
+2026-10-27 23:38:37,927 INFO src.nested_cv: [canary_permutation__ced__xgboost__permuted] fold 2/5 done (r0 f1), elapsed 5s, about 8s left
+2026-10-27 23:38:37,927 INFO src.nested_cv: [canary_permutation__ced__xgboost__permuted] fold 3/5 done (r0 f2), elapsed 5s, about 4s left
+2026-10-27 23:38:37,927 INFO src.nested_cv: [canary_permutation__ced__xgboost__permuted] fold 4/5 done (r0 f3), elapsed 5s, about 1s left
+2026-10-27 23:38:37,927 INFO src.nested_cv: [canary_permutation__ced__xgboost__permuted] fold 5/5 done (r0 f4), elapsed 5s, about 0s left
+2026-10-27 23:38:41,452 INFO src.nested_cv: [canary_spy__hb__xgboost__spy] fold 1/5 done (r0 f0), elapsed 4s, about 14s left
+2026-10-27 23:38:41,452 INFO src.nested_cv: [canary_spy__hb__xgboost__spy] fold 2/5 done (r0 f1), elapsed 4s, about 5s left
+2026-10-27 23:38:41,473 INFO src.nested_cv: [canary_spy__hb__xgboost__spy] fold 3/5 done (r0 f2), elapsed 4s, about 2s left
+2026-10-27 23:38:41,473 INFO src.nested_cv: [canary_spy__hb__xgboost__spy] fold 4/5 done (r0 f3), elapsed 4s, about 1s left
+2026-10-27 23:38:41,473 INFO src.nested_cv: [canary_spy__hb__xgboost__spy] fold 5/5 done (r0 f4), elapsed 4s, about 0s left
+2026-10-27 23:38:44,285 INFO src.nested_cv: [canary_spy__ced__xgboost__spy] fold 1/5 done (r0 f0), elapsed 3s, about 11s left
+2026-10-27 23:38:44,285 INFO src.nested_cv: [canary_spy__ced__xgboost__spy] fold 2/5 done (r0 f1), elapsed 3s, about 4s left
+2026-10-27 23:38:44,410 INFO src.nested_cv: [canary_spy__ced__xgboost__spy] fold 3/5 done (r0 f2), elapsed 3s, about 2s left
+2026-10-27 23:38:44,410 INFO src.nested_cv: [canary_spy__ced__xgboost__spy] fold 4/5 done (r0 f3), elapsed 3s, about 1s left
+2026-10-27 23:38:44,410 INFO src.nested_cv: [canary_spy__ced__xgboost__spy] fold 5/5 done (r0 f4), elapsed 3s, about 0s left
+2026-10-27 23:38:48,599 INFO src.nested_cv: [canary_permutation__hb__gbm__permuted] fold 1/5 done (r0 f0), elapsed 4s, about 17s left
+2026-10-27 23:38:49,530 INFO src.nested_cv: [canary_permutation__hb__gbm__permuted] fold 2/5 done (r0 f1), elapsed 5s, about 8s left
+2026-10-27 23:38:50,490 INFO src.nested_cv: [canary_permutation__hb__gbm__permuted] fold 3/5 done (r0 f2), elapsed 6s, about 4s left
+2026-10-27 23:38:50,490 INFO src.nested_cv: [canary_permutation__hb__gbm__permuted] fold 4/5 done (r0 f3), elapsed 6s, about 2s left
+2026-10-27 23:38:50,490 INFO src.nested_cv: [canary_permutation__hb__gbm__permuted] fold 5/5 done (r0 f4), elapsed 6s, about 0s left
+2026-10-27 23:38:54,500 INFO src.nested_cv: [canary_spy__hb__gbm__spy] fold 1/5 done (r0 f0), elapsed 4s, about 16s left
+2026-10-27 23:38:54,500 INFO src.nested_cv: [canary_spy__hb__gbm__spy] fold 2/5 done (r0 f1), elapsed 4s, about 6s left
+2026-10-27 23:38:56,351 INFO src.nested_cv: [canary_spy__hb__gbm__spy] fold 3/5 done (r0 f2), elapsed 6s, about 4s left
+2026-10-27 23:38:56,351 INFO src.nested_cv: [canary_spy__hb__gbm__spy] fold 4/5 done (r0 f3), elapsed 6s, about 1s left
+2026-10-27 23:38:56,351 INFO src.nested_cv: [canary_spy__hb__gbm__spy] fold 5/5 done (r0 f4), elapsed 6s, about 0s left
+2026-10-27 23:38:59,049 INFO src.nested_cv: [canary_permutation__hb__lightgbm__permuted] fold 1/5 done (r0 f0), elapsed 3s, about 11s left
+2026-10-27 23:38:59,049 INFO src.nested_cv: [canary_permutation__hb__lightgbm__permuted] fold 2/5 done (r0 f1), elapsed 3s, about 4s left
+2026-10-27 23:38:59,049 INFO src.nested_cv: [canary_permutation__hb__lightgbm__permuted] fold 3/5 done (r0 f2), elapsed 3s, about 2s left
+2026-10-27 23:38:59,163 INFO src.nested_cv: [canary_permutation__hb__lightgbm__permuted] fold 4/5 done (r0 f3), elapsed 3s, about 1s left
+2026-10-27 23:38:59,216 INFO src.nested_cv: [canary_permutation__hb__lightgbm__permuted] fold 5/5 done (r0 f4), elapsed 3s, about 0s left
+2026-10-27 23:39:02,071 INFO src.nested_cv: [canary_spy__hb__lightgbm__spy] fold 1/5 done (r0 f0), elapsed 3s, about 11s left
+2026-10-27 23:39:02,071 INFO src.nested_cv: [canary_spy__hb__lightgbm__spy] fold 2/5 done (r0 f1), elapsed 3s, about 4s left
+2026-10-27 23:39:02,071 INFO src.nested_cv: [canary_spy__hb__lightgbm__spy] fold 3/5 done (r0 f2), elapsed 3s, about 2s left
+2026-10-27 23:39:02,164 INFO src.nested_cv: [canary_spy__hb__lightgbm__spy] fold 4/5 done (r0 f3), elapsed 3s, about 1s left
+2026-10-27 23:39:02,164 INFO src.nested_cv: [canary_spy__hb__lightgbm__spy] fold 5/5 done (r0 f4), elapsed 3s, about 0s left
+2026-10-27 23:39:04,072 INFO src.nested_cv: [canary_permutation__hb__catboost__permuted] fold 1/5 done (r0 f0), elapsed 2s, about 8s left
+2026-10-27 23:39:05,925 INFO src.nested_cv: [canary_permutation__hb__catboost__permuted] fold 2/5 done (r0 f1), elapsed 4s, about 6s left
+2026-10-27 23:39:06,977 INFO src.nested_cv: [canary_permutation__hb__catboost__permuted] fold 3/5 done (r0 f2), elapsed 5s, about 3s left
+2026-10-27 23:39:06,977 INFO src.nested_cv: [canary_permutation__hb__catboost__permuted] fold 4/5 done (r0 f3), elapsed 5s, about 1s left
+2026-10-27 23:39:06,977 INFO src.nested_cv: [canary_permutation__hb__catboost__permuted] fold 5/5 done (r0 f4), elapsed 5s, about 0s left
+2026-10-27 23:39:08,897 INFO src.nested_cv: [canary_spy__hb__catboost__spy] fold 1/5 done (r0 f0), elapsed 2s, about 8s left
+2026-10-27 23:39:10,457 INFO src.nested_cv: [canary_spy__hb__catboost__spy] fold 2/5 done (r0 f1), elapsed 3s, about 5s left
+2026-10-27 23:39:10,457 INFO src.nested_cv: [canary_spy__hb__catboost__spy] fold 3/5 done (r0 f2), elapsed 3s, about 2s left
+2026-10-27 23:39:10,457 INFO src.nested_cv: [canary_spy__hb__catboost__spy] fold 4/5 done (r0 f3), elapsed 3s, about 1s left
+2026-10-27 23:39:10,844 INFO src.nested_cv: [canary_spy__hb__catboost__spy] fold 5/5 done (r0 f4), elapsed 4s, about 0s left
+2026-10-27 23:39:16,103 INFO src.nested_cv: [canary_permutation__hb__adaboost__permuted] fold 1/5 done (r0 f0), elapsed 5s, about 21s left
+2026-10-27 23:39:16,217 INFO src.nested_cv: [canary_permutation__hb__adaboost__permuted] fold 2/5 done (r0 f1), elapsed 5s, about 8s left
+2026-10-27 23:39:17,375 INFO src.nested_cv: [canary_permutation__hb__adaboost__permuted] fold 3/5 done (r0 f2), elapsed 7s, about 4s left
+2026-10-27 23:39:18,174 INFO src.nested_cv: [canary_permutation__hb__adaboost__permuted] fold 4/5 done (r0 f3), elapsed 7s, about 2s left
+2026-10-27 23:39:18,174 INFO src.nested_cv: [canary_permutation__hb__adaboost__permuted] fold 5/5 done (r0 f4), elapsed 7s, about 0s left
+2026-10-27 23:39:24,679 INFO src.nested_cv: [canary_spy__hb__adaboost__spy] fold 1/5 done (r0 f0), elapsed 6s, about 26s left
+2026-10-27 23:39:24,679 INFO src.nested_cv: [canary_spy__hb__adaboost__spy] fold 2/5 done (r0 f1), elapsed 6s, about 10s left
+2026-10-27 23:39:26,310 INFO src.nested_cv: [canary_spy__hb__adaboost__spy] fold 3/5 done (r0 f2), elapsed 8s, about 5s left
+2026-10-27 23:39:26,310 INFO src.nested_cv: [canary_spy__hb__adaboost__spy] fold 4/5 done (r0 f3), elapsed 8s, about 2s left
+2026-10-27 23:39:26,310 INFO src.nested_cv: [canary_spy__hb__adaboost__spy] fold 5/5 done (r0 f4), elapsed 8s, about 0s left
+2026-10-27 23:39:30,936 INFO src.nested_cv: [canary_permutation__ced__gbm__permuted] fold 1/5 done (r0 f0), elapsed 5s, about 18s left
+2026-10-27 23:39:32,797 INFO src.nested_cv: [canary_permutation__ced__gbm__permuted] fold 2/5 done (r0 f1), elapsed 6s, about 10s left
+2026-10-27 23:39:33,627 INFO src.nested_cv: [canary_permutation__ced__gbm__permuted] fold 3/5 done (r0 f2), elapsed 7s, about 5s left
+2026-10-27 23:39:33,627 INFO src.nested_cv: [canary_permutation__ced__gbm__permuted] fold 4/5 done (r0 f3), elapsed 7s, about 2s left
+2026-10-27 23:39:33,627 INFO src.nested_cv: [canary_permutation__ced__gbm__permuted] fold 5/5 done (r0 f4), elapsed 7s, about 0s left
+2026-10-27 23:39:38,311 INFO src.nested_cv: [canary_spy__ced__gbm__spy] fold 1/5 done (r0 f0), elapsed 5s, about 19s left
+2026-10-27 23:39:39,790 INFO src.nested_cv: [canary_spy__ced__gbm__spy] fold 2/5 done (r0 f1), elapsed 6s, about 9s left
+2026-10-27 23:39:41,043 INFO src.nested_cv: [canary_spy__ced__gbm__spy] fold 3/5 done (r0 f2), elapsed 7s, about 5s left
+2026-10-27 23:39:41,043 INFO src.nested_cv: [canary_spy__ced__gbm__spy] fold 4/5 done (r0 f3), elapsed 7s, about 2s left
+2026-10-27 23:39:41,043 INFO src.nested_cv: [canary_spy__ced__gbm__spy] fold 5/5 done (r0 f4), elapsed 7s, about 0s left
+2026-10-27 23:39:43,354 INFO src.nested_cv: [canary_permutation__ced__lightgbm__permuted] fold 1/5 done (r0 f0), elapsed 2s, about 9s left
+2026-10-27 23:39:43,354 INFO src.nested_cv: [canary_permutation__ced__lightgbm__permuted] fold 2/5 done (r0 f1), elapsed 2s, about 3s left
+2026-10-27 23:39:43,354 INFO src.nested_cv: [canary_permutation__ced__lightgbm__permuted] fold 3/5 done (r0 f2), elapsed 2s, about 2s left
+2026-10-27 23:39:43,396 INFO src.nested_cv: [canary_permutation__ced__lightgbm__permuted] fold 4/5 done (r0 f3), elapsed 2s, about 1s left
+2026-10-27 23:39:43,396 INFO src.nested_cv: [canary_permutation__ced__lightgbm__permuted] fold 5/5 done (r0 f4), elapsed 2s, about 0s left
+2026-10-27 23:39:45,685 INFO src.nested_cv: [canary_spy__ced__lightgbm__spy] fold 1/5 done (r0 f0), elapsed 2s, about 9s left
+2026-10-27 23:39:45,685 INFO src.nested_cv: [canary_spy__ced__lightgbm__spy] fold 2/5 done (r0 f1), elapsed 2s, about 3s left
+2026-10-27 23:39:45,685 INFO src.nested_cv: [canary_spy__ced__lightgbm__spy] fold 3/5 done (r0 f2), elapsed 2s, about 2s left
+2026-10-27 23:39:45,768 INFO src.nested_cv: [canary_spy__ced__lightgbm__spy] fold 4/5 done (r0 f3), elapsed 2s, about 1s left
+2026-10-27 23:39:45,768 INFO src.nested_cv: [canary_spy__ced__lightgbm__spy] fold 5/5 done (r0 f4), elapsed 2s, about 0s left
+2026-10-27 23:39:50,222 INFO src.nested_cv: [canary_permutation__ced__catboost__permuted] fold 1/5 done (r0 f0), elapsed 4s, about 18s left
+2026-10-27 23:39:50,222 INFO src.nested_cv: [canary_permutation__ced__catboost__permuted] fold 2/5 done (r0 f1), elapsed 4s, about 7s left
+2026-10-27 23:39:51,823 INFO src.nested_cv: [canary_permutation__ced__catboost__permuted] fold 3/5 done (r0 f2), elapsed 6s, about 4s left
+2026-10-27 23:39:51,999 INFO src.nested_cv: [canary_permutation__ced__catboost__permuted] fold 4/5 done (r0 f3), elapsed 6s, about 2s left
+2026-10-27 23:39:51,999 INFO src.nested_cv: [canary_permutation__ced__catboost__permuted] fold 5/5 done (r0 f4), elapsed 6s, about 0s left
+2026-10-27 23:39:54,944 INFO src.nested_cv: [canary_spy__ced__catboost__spy] fold 1/5 done (r0 f0), elapsed 3s, about 12s left
+2026-10-27 23:39:54,944 INFO src.nested_cv: [canary_spy__ced__catboost__spy] fold 2/5 done (r0 f1), elapsed 3s, about 4s left
+2026-10-27 23:39:57,769 INFO src.nested_cv: [canary_spy__ced__catboost__spy] fold 3/5 done (r0 f2), elapsed 6s, about 4s left
+2026-10-27 23:39:57,769 INFO src.nested_cv: [canary_spy__ced__catboost__spy] fold 4/5 done (r0 f3), elapsed 6s, about 1s left
+2026-10-27 23:39:57,769 INFO src.nested_cv: [canary_spy__ced__catboost__spy] fold 5/5 done (r0 f4), elapsed 6s, about 0s left
+2026-10-27 23:40:05,526 INFO src.nested_cv: [canary_permutation__ced__adaboost__permuted] fold 1/5 done (r0 f0), elapsed 8s, about 31s left
+2026-10-27 23:40:06,384 INFO src.nested_cv: [canary_permutation__ced__adaboost__permuted] fold 2/5 done (r0 f1), elapsed 9s, about 13s left
+2026-10-27 23:40:07,181 INFO src.nested_cv: [canary_permutation__ced__adaboost__permuted] fold 3/5 done (r0 f2), elapsed 9s, about 6s left
+2026-10-27 23:40:07,181 INFO src.nested_cv: [canary_permutation__ced__adaboost__permuted] fold 4/5 done (r0 f3), elapsed 9s, about 2s left
+2026-10-27 23:40:07,181 INFO src.nested_cv: [canary_permutation__ced__adaboost__permuted] fold 5/5 done (r0 f4), elapsed 9s, about 0s left
+2026-10-27 23:40:15,927 INFO src.nested_cv: [canary_spy__ced__adaboost__spy] fold 1/5 done (r0 f0), elapsed 9s, about 35s left
+2026-10-27 23:40:15,927 INFO src.nested_cv: [canary_spy__ced__adaboost__spy] fold 2/5 done (r0 f1), elapsed 9s, about 13s left
+2026-10-27 23:40:15,927 INFO src.nested_cv: [canary_spy__ced__adaboost__spy] fold 3/5 done (r0 f2), elapsed 9s, about 6s left
+2026-10-27 23:40:15,927 INFO src.nested_cv: [canary_spy__ced__adaboost__spy] fold 4/5 done (r0 f3), elapsed 9s, about 2s left
+2026-10-27 23:40:15,927 INFO src.nested_cv: [canary_spy__ced__adaboost__spy] fold 5/5 done (r0 f4), elapsed 9s, about 0s left
+=== 03_canaries | config used ===
+  seed=42
+  outer CV=5 folds x 5 repeats (stratified on anemia class x CED)
+  inner CV=3 folds (tuning and thresholds), min stratum=5
+  tuning=Optuna tpe, 30 trials for every tuned model, objective={'regression': 'mae', 'classification': 'roc_auc'}
+  features=per fold, forced ['prepreg_weight', 'anc_visits', 'hfias_score'] plus best of the rest, k=7, RF 300 trees
+  thresholds: Hb flags 70% of true cases, CED youden plus sensitivity [0.8, 0.9]
+  bootstrap=2000 resamples per repetition, CI=0.95
+  versions: python 3.11.6, numpy 1.26.4, pandas 2.2.3, scipy 1.13.1, sklearn 1.5.2, imblearn 0.12.4, xgboost 2.1.3, lightgbm 4.5.0, catboost 1.2.7, shap 0.46.0, smogn unknown, optuna 4.1.0, statsmodels 0.14.4, matplotlib 3.9.2, yaml 6.0.2, joblib 1.4.2, streamlit 1.40.1
+{'canary': 'label_permutation_hb', 'r2': -0.03743325217330473, 'auc_roc': 0.5128428220162664, 'limit': 'r2 <= 0.05, auc <= 0.6', 'passed': True}
+{'canary': 'label_permutation_ced', 'auc_roc': 0.5042333303202868, 'limit': 'auc <= 0.6', 'passed': True}
+{'canary': 'fit_spy_hb', 'fits_checked': 80, 'thresholds_from_inner_only': True, 'passed': True}
+{'canary': 'fit_spy_ced', 'fits_checked': 80, 'thresholds_from_inner_only': True, 'passed': True}
+               canary        r2  auc_roc                  limit  passed  fits_checked thresholds_from_inner_only
+ label_permutation_hb -0.037433 0.512843 r2 <= 0.05, auc <= 0.6    True           NaN                        NaN
+label_permutation_ced       NaN 0.504233             auc <= 0.6    True           NaN                        NaN
+           fit_spy_hb       NaN      NaN                    NaN    True          80.0                       True
+          fit_spy_ced       NaN      NaN                    NaN    True          80.0                       True
+{'canary': 'label_permutation_hb', 'model': 'gbm', 'r2': -0.06503960216660998, 'auc_roc': 0.48851900888972954, 'passed': True}
+{'canary': 'fit_spy_hb', 'model': 'gbm', 'fits_checked': 80, 'thresholds_from_inner_only': True, 'passed': True}
+{'canary': 'label_permutation_hb', 'model': 'lightgbm', 'r2': -0.0833034085655131, 'auc_roc': 0.4780026480045394, 'passed': True}
+{'canary': 'fit_spy_hb', 'model': 'lightgbm', 'fits_checked': 80, 'thresholds_from_inner_only': True, 'passed': True}
+{'canary': 'label_permutation_hb', 'model': 'catboost', 'r2': -0.041694068938518125, 'auc_roc': 0.49710610932475885, 'passed': True}
+{'canary': 'fit_spy_hb', 'model': 'catboost', 'fits_checked': 80, 'thresholds_from_inner_only': True, 'passed': True}
+{'canary': 'label_permutation_hb', 'model': 'adaboost', 'r2': -0.04839675295549872, 'auc_roc': 0.503026290902213, 'passed': True}
+{'canary': 'fit_spy_hb', 'model': 'adaboost', 'fits_checked': 80, 'thresholds_from_inner_only': True, 'passed': True}
+{'canary': 'label_permutation_ced', 'model': 'gbm', 'r2': None, 'auc_roc': 0.5048058091536353, 'passed': True}
+{'canary': 'fit_spy_ced', 'model': 'gbm', 'fits_checked': 80, 'thresholds_from_inner_only': True, 'passed': True}
+{'canary': 'label_permutation_ced', 'model': 'lightgbm', 'r2': None, 'auc_roc': 0.5199614330049113, 'passed': True}
+{'canary': 'fit_spy_ced', 'model': 'lightgbm', 'fits_checked': 80, 'thresholds_from_inner_only': True, 'passed': True}
+{'canary': 'label_permutation_ced', 'model': 'catboost', 'r2': None, 'auc_roc': 0.4646418994245081, 'passed': True}
+{'canary': 'fit_spy_ced', 'model': 'catboost', 'fits_checked': 80, 'thresholds_from_inner_only': True, 'passed': True}
+{'canary': 'label_permutation_ced', 'model': 'adaboost', 'r2': None, 'auc_roc': 0.5454819367862845, 'passed': True}
+{'canary': 'fit_spy_ced', 'model': 'adaboost', 'fits_checked': 80, 'thresholds_from_inner_only': True, 'passed': True}
+               canary    model        r2  auc_roc  passed  fits_checked thresholds_from_inner_only
+ label_permutation_hb      gbm -0.065040 0.488519    True           NaN                        NaN
+           fit_spy_hb      gbm       NaN      NaN    True          80.0                       True
+ label_permutation_hb lightgbm -0.083303 0.478003    True           NaN                        NaN
+           fit_spy_hb lightgbm       NaN      NaN    True          80.0                       True
+ label_permutation_hb catboost -0.041694 0.497106    True           NaN                        NaN
+           fit_spy_hb catboost       NaN      NaN    True          80.0                       True
+ label_permutation_hb adaboost -0.048397 0.503026    True           NaN                        NaN
+           fit_spy_hb adaboost       NaN      NaN    True          80.0                       True
+label_permutation_ced      gbm       NaN 0.504806    True           NaN                        NaN
+          fit_spy_ced      gbm       NaN      NaN    True          80.0                       True
+label_permutation_ced lightgbm       NaN 0.519961    True           NaN                        NaN
+          fit_spy_ced lightgbm       NaN      NaN    True          80.0                       True
+label_permutation_ced catboost       NaN 0.464642    True           NaN                        NaN
+          fit_spy_ced catboost       NaN      NaN    True          80.0                       True
+label_permutation_ced adaboost       NaN 0.545482    True           NaN                        NaN
+          fit_spy_ced adaboost       NaN      NaN    True          80.0                       True
+All canaries passed.

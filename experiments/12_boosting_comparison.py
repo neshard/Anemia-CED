@@ -78,14 +78,19 @@ def quantity(metric: str) -> str:
 
 
 def two_sided_p(boots: list[np.ndarray]) -> float:
-    """Bootstrap two-sided p for a zero difference, (count + 1) / (B + 1) per tail, averaged over repetitions."""
-    ps = []
-    for b in boots:
-        b = np.asarray(b, dtype=float)
-        b = b[np.isfinite(b)]
-        tail = min(int((b <= 0).sum()), int((b >= 0).sum()))
-        ps.append(min(1.0, 2 * (tail + 1) / (len(b) + 1)))
-    return float(np.mean(ps))
+    """Bootstrap two-sided p for a zero difference, consistent with the repetition-averaged CI.
+
+    The CI averages each quantile over the repetitions, so the draws of every repetition are
+    sorted and averaged position by position (quantile averaging) and the p-value is read from
+    that averaged distribution: (count in the smaller tail + 1) / (B + 1), doubled. A 95 percent
+    CI that contains 0 then always has p >= 0.05. Averaging per-repetition p-values instead would
+    not be: when repetitions disagree in sign, each can be small while the averaged CI contains 0.
+    """
+    n = min(int(np.isfinite(np.asarray(b, dtype=float)).sum()) for b in boots)
+    probs = (np.arange(n) + 0.5) / n
+    avg = np.mean([np.nanquantile(np.asarray(b, dtype=float), probs) for b in boots], axis=0)
+    tail = min(int((avg <= 0).sum()), int((avg >= 0).sum()))
+    return float(min(1.0, 2 * (tail + 1) / (n + 1)))
 
 
 def fold_metric(df: pd.DataFrame, fn, metric: str) -> pd.Series:

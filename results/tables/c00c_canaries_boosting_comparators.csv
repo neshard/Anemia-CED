@@ -1,0 +1,17 @@
+canary,model,r2,auc_roc,passed,fits_checked,thresholds_from_inner_only
+label_permutation_hb,gbm,-0.06503960216660998,0.48851900888972954,True,,
+fit_spy_hb,gbm,,,True,80.0,True
+label_permutation_hb,lightgbm,-0.0833034085655131,0.4780026480045394,True,,
+fit_spy_hb,lightgbm,,,True,80.0,True
+label_permutation_hb,catboost,-0.041694068938518125,0.49710610932475885,True,,
+fit_spy_hb,catboost,,,True,80.0,True
+label_permutation_hb,adaboost,-0.04839675295549872,0.503026290902213,True,,
+fit_spy_hb,adaboost,,,True,80.0,True
+label_permutation_ced,gbm,,0.5048058091536353,True,,
+fit_spy_ced,gbm,,,True,80.0,True
+label_permutation_ced,lightgbm,,0.5199614330049113,True,,
+fit_spy_ced,lightgbm,,,True,80.0,True
+label_permutation_ced,catboost,,0.4646418994245081,True,,
+fit_spy_ced,catboost,,,True,80.0,True
+label_permutation_ced,adaboost,,0.5454819367862845,True,,
+fit_spy_ced,adaboost,,,True,80.0,True

@@ -228,8 +228,20 @@ class ScreeningService:
             ced_probability=prob, ced_label=int(prob >= threshold), ced_text=ced_text, ced_figure=fig,
             ced_top=top, advice=advice, hb_figure=hb_fig,
             extra={"threshold": threshold, "hb_algorithm": self.algorithms["hb"],
-                   "ced_algorithm": self.algorithms["ced"], "hb_explanation_enabled": self.hb_explanation_enabled},
+                   "ced_algorithm": self.algorithms["ced"], "hb_explanation_enabled": self.hb_explanation_enabled,
+                   "model_info": self.model_info()},
         )
+
+    def model_info(self) -> dict[str, dict[str, Any]]:
+        """How each loaded model was chosen, from the metadata written by 09 (for the 'Tentang model' panel)."""
+        out = {}
+        for target in ("hb", "ced"):
+            sel = self.meta[target].get("selection", {})
+            out[target] = {"algorithm": self.algorithms[target], "label": self.algorithm_label(target),
+                           "metric": sel.get("metric"), "metric_point": sel.get("metric_point"),
+                           "equivalence_group": list(sel.get("equivalence_group", [])),
+                           "n_records": self.meta[target].get("n_records")}
+        return out
 
     def storage_records(self, answers: Mapping[str, Any], result: ScreeningResult) -> tuple[dict[str, Any], dict[str, Any]]:
         """Inputs and prediction as stored in SQLite. No Hb range is stored (option C)."""

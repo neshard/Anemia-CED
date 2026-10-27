@@ -318,3 +318,48 @@ def test_app_save_shows_readable_code(tmp_path: Path, monkeypatch) -> None:  # t
     assert re.search(r"\*\*\d{8}-001\*\*", msg) and "tidak menyimpan nama" in msg
     assert SessionStore(tmp_path / "app.sqlite").counts()["sessions"] == 1
     assert SessionStore(PROJECT_ROOT / "data" / "app" / "sessions.sqlite").counts()["sessions"] == 0  # real DB untouched
+
+
+@needs_real
+def test_dashboard_names_the_selected_models(tmp_path: Path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    """The result tabs, the 'Tentang model' panel and the footer follow artifacts/final_models.json."""
+    from streamlit.testing.v1 import AppTest
+
+    from src.postmodel.explain import ALGORITHM_LABELS
+
+    meta = json.loads((PROJECT_ROOT / "artifacts" / "final_models.json").read_text(encoding="utf-8"))
+    labels = {t: ALGORITHM_LABELS[meta[t]["algorithm"]] for t in ("hb", "ced")}
+    monkeypatch.setenv("ANEMIA_CED_APP_DB", str(tmp_path / "app.sqlite"))
+    at = AppTest.from_file(str(PROJECT_ROOT / "app" / "Skrining.py"), default_timeout=120)
+    at.run()
+    at.button[0].click().run()
+    assert not at.exception
+    assert any(e.label == "Tentang model yang dipakai" for e in at.expander)
+    text = " ".join(str(x.value) for x in [*at.markdown, *at.caption])
+    assert f"Model: {labels['ced']}" in text and f"Model: {labels['hb']}" in text
+    assert f"KEK {labels['ced']}, Hb {labels['hb']}" in text  # footer
+    assert "belum terbukti" in text  # equivalence group stated, no claim of superiority
+
+
+@needs_real
+def test_history_shows_the_model_and_flags_outdated_sessions(tmp_path: Path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    from streamlit.testing.v1 import AppTest
+
+    db = tmp_path / "app.sqlite"
+    monkeypatch.setenv("ANEMIA_CED_APP_DB", str(db))
+    service = ScreeningService()
+    answers = median_answers(service)
+    inputs, prediction = service.storage_records(answers, service.predict(answers))
+    store = SessionStore(db)
+    store.create(inputs, {**prediction, "hb_algorithm": None, "ced_algorithm": None}, "u1")  # saved before names existed
+    at = AppTest.from_file(str(PROJECT_ROOT / "app" / "pages" / "1_Riwayat_sesi.py"), default_timeout=120)
+    at.run()
+    assert not at.exception
+    assert {"model_KEK", "model_Hb"} <= set(at.dataframe[0].value.columns)
+    assert any("berbeda dari model saat ini" in str(i.value) for i in at.info)
+    [b for b in at.button if b.label.startswith("Hitung ulang")][0].click().run()
+    assert not at.exception
+    saved = store.read(store.list()["session_id"][0])["prediction"]
+    assert (saved["hb_algorithm"], saved["ced_algorithm"]) == (service.algorithms["hb"], service.algorithms["ced"])
+    at.run()
+    assert not any("berbeda dari model saat ini" in str(i.value) for i in at.info)

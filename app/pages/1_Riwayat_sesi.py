@@ -17,6 +17,7 @@ import streamlit as st  # noqa: E402
 st.set_page_config(page_title="Riwayat sesi", page_icon=":material/history:", layout="centered")
 
 from components.results import fmt_num  # noqa: E402
+from src.postmodel.explain import ALGORITHM_LABELS  # noqa: E402
 from components.state import footer, get_service, get_store  # noqa: E402
 
 st.title("Riwayat sesi")
@@ -37,7 +38,9 @@ table = sessions.assign(
     waktu=pd.to_datetime(sessions["timestamp"]).dt.strftime("%Y-%m-%d %H:%M"),
     risiko_KEK=(100 * sessions["ced_probability"]).round(0).astype(int).astype(str) + "%",
     di_atas_ambang=sessions["ced_label"].map({1: "ya", 0: "tidak"}),
-)[["kode", "waktu", "risiko_KEK", "di_atas_ambang"]]
+    model_KEK=sessions["ced_algorithm"].map(lambda a: ALGORITHM_LABELS.get(a, a) if isinstance(a, str) else "tidak tercatat"),
+    model_Hb=sessions["hb_algorithm"].map(lambda a: ALGORITHM_LABELS.get(a, a) if isinstance(a, str) else "tidak tercatat"),
+)[["kode", "waktu", "risiko_KEK", "di_atas_ambang", "model_KEK", "model_Hb"]]
 st.dataframe(table, hide_index=True, use_container_width=True)
 
 labels = dict(zip(sessions["session_id"], codes + "  (" + pd.to_datetime(sessions["timestamp"]).dt.strftime("%H:%M") + ")",
@@ -56,6 +59,14 @@ pred = record["prediction"]
 st.markdown("**Hasil yang tersimpan**")
 st.write(f"Peluang risiko KEK: {100 * pred['ced_probability']:.0f}%. "
          f"Perkiraan Hb (indikatif): {fmt_num(pred['predicted_hb'])} g/dL.")
+stored = {t: pred.get(f"{t}_algorithm") for t in ("ced", "hb")}
+st.caption("Model saat sesi dihitung: KEK " + ALGORITHM_LABELS.get(stored["ced"] or "", stored["ced"] or "tidak tercatat")
+           + ", Hb " + ALGORITHM_LABELS.get(stored["hb"] or "", stored["hb"] or "tidak tercatat") + ".")
+outdated = [t for t in ("ced", "hb") if stored[t] != service.algorithms[t]]
+if outdated:
+    st.info("Sesi ini dihitung dengan model yang berbeda dari model saat ini ("
+            + ", ".join(f"{'KEK' if t == 'ced' else 'Hb'}: sekarang {service.algorithm_label(t)}" for t in outdated)
+            + "). Tekan \"Hitung ulang dengan model saat ini\" untuk memperbarui hasilnya.")
 if pred.get("top5_shap_ced"):
     st.dataframe(pd.DataFrame(pred["top5_shap_ced"])[["label", "value_text", "shap"]]
                  .rename(columns={"label": "faktor", "value_text": "jawaban", "shap": "kontribusi (log-odds)"}),

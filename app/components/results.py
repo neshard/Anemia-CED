@@ -55,6 +55,35 @@ def penjelasan_tab(result: ScreeningResult) -> None:
     else:
         st.info("Penjelasan faktor untuk perkiraan Hb tidak ditampilkan karena model Hb tidak terbukti lebih akurat "
                 "daripada menebak nilai rata-rata.")
+    tentang_model(result)
+
+
+METRIC_TEXT = {"auc_roc": ("AUC-ROC", "makin besar makin baik"), "mae": ("MAE", "rata-rata selisih dalam g/dL, "
+                                                                          "makin kecil makin baik")}
+
+
+def tentang_model(result: ScreeningResult) -> None:
+    """Which algorithm each estimate comes from and how it was chosen. Plain wording for a cadre."""
+    info = result.extra.get("model_info")
+    if not info:
+        return
+    with st.expander("Tentang model yang dipakai"):
+        st.markdown("Lima algoritma boosting (XGBoost, Gradient Boosting Machine, LightGBM, CatBoost, AdaBoost) "
+                    "diuji dengan cara yang sama pada data ibu hamil di Lombok Utara. Untuk tiap perkiraan, dashboard "
+                    "memakai algoritma dengan hasil uji terbaik yang penjelasannya dapat dihitung dengan tepat.")
+        for target, title in (("ced", "Risiko KEK"), ("hb", "Perkiraan Hb")):
+            m = info[target]
+            line = f"- **{title}**: {m['label']}"
+            if m.get("metric") in METRIC_TEXT and m.get("metric_point") is not None:
+                name, how = METRIC_TEXT[m["metric"]]
+                line += f" ({name} {fmt_num(m['metric_point'], 2)}, {how})"
+            st.markdown(line)
+            others = [ALGORITHM_LABELS.get(a, a) for a in m.get("equivalence_group", []) if a != m["algorithm"]]
+            if others:
+                st.caption(f"Hasil {m['label']} tidak berbeda bermakna dengan {', '.join(others)}. "
+                           "Keunggulannya kecil dan belum terbukti.")
+        st.caption("Model dipilih dari lima kandidat pada data yang sama, sehingga hasil ujinya cenderung sedikit "
+                   "terlalu baik. Model belum diuji pada daerah lain.")
 
 
 def saran_tab(result: ScreeningResult) -> None:

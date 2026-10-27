@@ -131,3 +131,10 @@ Reason: the title is now "Evaluating XGBoost with SHAP ...". The supervisor aske
 - **07** is not run for GBM (researcher decision of 2026-10-27), recorded as a limitation: the sensitivity analyses cover XGBoost and the baselines only.
 - Hypotheses P1, P2, S1 and S2 and their verdicts (d01, d02) are unchanged: they concern XGBoost.
 - 297 tests pass. The dashboard loads GBM for Hb and XGBoost for CED from artifacts/final_models.json.
+
+## 2026-10-28 (dashboard follows the version 2 selection)
+
+- **Tentang model panel** (tab Penjelasan): names the algorithm behind each estimate (CED XGBoost, Hb Gradient Boosting Machine), its cross-validated metric, the models it did not differ from significantly ("keunggulannya kecil dan belum terbukti"), and that selection from five candidates on the same data makes the result slightly optimistic. Content comes from artifacts/final_models.json, never hard-coded.
+- **Riwayat sesi**: the history table shows the model of each saved session (model_KEK, model_Hb; "tidak tercatat" for sessions saved before algorithm names were stored). A session computed with a different model than the current one is flagged with a prompt to recompute. Recomputing stores the current algorithm names.
+- **Bug fix found by the new history test**: the history page crashed as soon as one session existed, because pyarrow 26.0.0 (pulled in by streamlit, not pinned, installed 2026-10-14) refuses NumPy 1.26. It had gone unnoticed because the database was always empty. pyarrow pinned to 18.1.0 in requirements.txt, installed with a constraints file: no other package changed. The modelling pipeline does not use pyarrow.
+- Verified: 299 tests pass, including both pages rendered with the real artifacts and a temporary database; `streamlit run app/Skrining.py` serves both pages. The real database stays empty.

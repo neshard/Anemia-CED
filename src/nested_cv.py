@@ -302,7 +302,9 @@ def run_fold(run: RunSpec, data: AnalysisData, config: Mapping[str, Any], repeat
     assert_disjoint(train_idx, test_idx, f"outer fold r{repeat} f{fold}")
     seed = int(config["project"]["random_seed"]) + 1000 * repeat + fold
     spy_log: list | None = [] if spy else None
+    started = time.perf_counter()
     params, inner_pred, splits = tune_inner(run, data, config, train_idx, seed, spy_log)
+    tuning_seconds = time.perf_counter() - started
 
     train_ids = data.X.index[train_idx]
     test_ids = data.X.index[test_idx]
@@ -329,8 +331,15 @@ def run_fold(run: RunSpec, data: AnalysisData, config: Mapping[str, Any], repeat
     record["threshold_source_ids_hash"] = hashlib.sha256("|".join(sorted(map(str, inner_ids))).encode()).hexdigest()
 
     make = make_pipeline_factory(run, config, spy_log, "outer_final")
+    started = time.perf_counter()
     pipe = make(params).fit(data.X.iloc[train_idx], data.y[train_idx])
+    fit_seconds = time.perf_counter() - started
+    started = time.perf_counter()
     pred = _predict(pipe, data.X.iloc[test_idx], data.task)
+    predict_seconds = time.perf_counter() - started
+    # Wall-clock times are descriptive only: they vary between runs and never enter a decision.
+    record.update({"tuning_seconds": tuning_seconds, "fit_seconds": fit_seconds, "predict_seconds": predict_seconds,
+                   "predict_seconds_per_row": predict_seconds / len(test_idx)})
     steps = pipe.named_steps
     record["selected_features"] = (list(steps["select"].selected_features_) if "select" in steps
                                    else list(steps["columns"].columns))

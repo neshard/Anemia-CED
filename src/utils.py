@@ -37,6 +37,8 @@ TRACKED_LIBRARIES: tuple[str, ...] = (
     "sklearn",
     "imblearn",
     "xgboost",
+    "lightgbm",
+    "catboost",
     "shap",
     "smogn",
     "optuna",

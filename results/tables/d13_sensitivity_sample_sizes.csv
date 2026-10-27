@@ -1,0 +1,12 @@
+analysis,target,n,excluded_no_gestational_age,excluded_no_usable_date,excluded_gap_above_limit
+sens_ced_le22,ced,410,,,
+sens_ced_le24,ced,410,,,
+sens_trimester,hb,395,1.0,,
+sens_gap_le90,hb,293,,19.0,84.0
+sens_gap_le30,hb,185,,19.0,192.0
+sens_grouped,hb,396,,,
+sens_grouped,ced,410,,,
+sens_all11,hb,396,,,
+sens_all11,ced,410,,,
+sens_fixed_preliminary,hb,396,,,
+sens_fixed_preliminary,ced,410,,,

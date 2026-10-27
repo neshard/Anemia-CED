@@ -1,0 +1,5 @@
+model,cv,n_train_rows,n_folds
+hb_model,stratified,316,25
+hb_model,group,316,5
+ced_model,stratified,328,25
+ced_model,group,328,5

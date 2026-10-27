@@ -1,0 +1,89 @@
+2026-10-18 02:41:42,073 INFO anemia_ced: Library versions written to D:\ANEMIA-CED\anemia_ced_screening\reports\library_versions.json
+2026-10-18 02:41:42,079 INFO anemia_ced: seed=42
+2026-10-18 02:41:42,079 INFO anemia_ced: outer CV=5 folds x 5 repeats (stratified on anemia class x CED)
+2026-10-18 02:41:42,079 INFO anemia_ced: inner CV=3 folds (tuning and thresholds), min stratum=5
+2026-10-18 02:41:42,079 INFO anemia_ced: tuning=Optuna tpe, 30 trials for every tuned model, objective={'regression': 'mae', 'classification': 'roc_auc'}
+2026-10-18 02:41:42,079 INFO anemia_ced: features=per fold, forced ['prepreg_weight', 'anc_visits', 'hfias_score'] plus best of the rest, k=7, RF 300 trees
+2026-10-18 02:41:42,088 INFO anemia_ced: thresholds: Hb flags 70% of true cases, CED youden plus sensitivity [0.8, 0.9]
+2026-10-18 02:41:42,088 INFO anemia_ced: bootstrap=2000 resamples per repetition, CI=0.95
+2026-10-18 02:41:42,088 INFO anemia_ced: versions: python 3.11.6, numpy 1.26.4, pandas 2.2.3, scipy 1.13.1, sklearn 1.5.2, imblearn 0.12.4, xgboost 2.1.3, shap 0.46.0, smogn unknown, optuna 4.1.0, statsmodels 0.14.4, matplotlib 3.9.2, yaml 6.0.2, joblib 1.4.2, streamlit 1.40.1
+D:\ANEMIA-CED\anemia_ced_screening\.venv\Lib\site-packages\numpy\lib\nanfunctions.py:1545: RuntimeWarning: All-NaN slice encountered
+  return _nanquantile_unchecked(
+2026-10-18 02:53:59,152 INFO src.cleaning: Cleaning done: 418 of 420 rows usable
+=== 08_evaluation_and_report | config used ===
+  seed=42
+  outer CV=5 folds x 5 repeats (stratified on anemia class x CED)
+  inner CV=3 folds (tuning and thresholds), min stratum=5
+  tuning=Optuna tpe, 30 trials for every tuned model, objective={'regression': 'mae', 'classification': 'roc_auc'}
+  features=per fold, forced ['prepreg_weight', 'anc_visits', 'hfias_score'] plus best of the rest, k=7, RF 300 trees
+  thresholds: Hb flags 70% of true cases, CED youden plus sensitivity [0.8, 0.9]
+  bootstrap=2000 resamples per repetition, CI=0.95
+  versions: python 3.11.6, numpy 1.26.4, pandas 2.2.3, scipy 1.13.1, sklearn 1.5.2, imblearn 0.12.4, xgboost 2.1.3, shap 0.46.0, smogn unknown, optuna 4.1.0, statsmodels 0.14.4, matplotlib 3.9.2, yaml 6.0.2, joblib 1.4.2, streamlit 1.40.1
+          canary     value  limit  passed
+too_good_ced_auc  0.773446    0.9    True
+  too_good_hb_r2 -0.017006    0.5    True
+           hypothesis      role       verdict  ci_level_used  holm_order  hypothesis_p_value
+  P1_anemia_screening   primary not_supported          0.975         1.0            0.948426
+P2_ced_classification   primary not_supported          0.975         2.0            0.999500
+        S1_hb_vs_mean secondary not_supported          0.950         NaN            1.000000
+       S2_hb_vs_ridge secondary not_supported          0.950         NaN            0.998201
+           hypothesis                                 component criterion   point  ci_low  ci_high  ci_level  p_one_sided      outcome
+  P1_anemia_screening                               sensitivity    >= 0.7  0.7224  0.6098   0.8280     0.975       0.3531 inconclusive
+  P1_anemia_screening                               specificity    >= 0.4  0.3344  0.2762   0.3941     0.975       0.9484         fail
+  P1_anemia_screening                                   auc_roc     > 0.5  0.5346  0.4556   0.6114     0.975       0.1938      not_met
+P2_ced_classification                                   auc_roc    >= 0.7  0.7734  0.7105   0.8301     0.975       0.0058         pass
+P2_ced_classification                                   auc_roc    >= 0.5  0.7734  0.7105   0.8301     0.975       0.0005          met
+P2_ced_classification auc_roc difference vs logistic_regression   >= 0.03 -0.0209 -0.0489   0.0068     0.975       0.9995         fail
+        S1_hb_vs_mean               mae reduction vs dummy_mean    >= 0.1  0.0024 -0.0217   0.0258     0.950       1.0000         fail
+       S2_hb_vs_ridge                    mae reduction vs ridge   >= 0.05  0.0050 -0.0171   0.0268     0.950       0.9982         fail
+# Results report (2026-10-18 03:14)
+
+**WARNING: the Hb XGBoost model is not better than the mean-only Dummy (MAE reduction 0.002 g/dL, 95% CI -0.022 to 0.026).**
+
+All results are internal validation on one regional dataset of fewer than 420 women. They show whether the approach is feasible in this dataset. They do not show that it generalizes to other regions or that it is clinically useful.
+
+Reported metrics come only from the outer cross-validation with per-fold feature selection. The final models (script 09) use a fixed feature list (selected in at least half of the 25 outer folds) and are not used for any reported metric.
+
+## Hypotheses
+
+| Hypothesis | Role | Verdict | CI level | Holm order | p-value |
+|---|---|---|---|---|---|
+| P1_anemia_screening | primary | not_supported | 0.975 | 1 | 0.9484 |
+| P2_ced_classification | primary | not_supported | 0.975 | 2 | 0.9995 |
+| S1_hb_vs_mean | secondary | not_supported | 0.95 |  | 1.0000 |
+| S2_hb_vs_ridge | secondary | not_supported | 0.95 |  | 0.9982 |
+
+| Hypothesis | Component | Criterion | Point | CI | Outcome |
+|---|---|---|---|---|---|
+| P1_anemia_screening | sensitivity | >= 0.7 (point_and_ci) | 0.722 | 0.610 to 0.828 (97.5%) | inconclusive |
+| P1_anemia_screening | specificity | >= 0.4 (point_and_ci) | 0.334 | 0.276 to 0.394 (97.5%) | fail |
+| P1_anemia_screening | auc_roc | > 0.5 (ci_lower_bound) | 0.535 | 0.456 to 0.611 (97.5%) | not_met |
+| P2_ced_classification | auc_roc | >= 0.7 (point_and_ci) | 0.773 | 0.710 to 0.830 (97.5%) | pass |
+| P2_ced_classification | auc_roc | >= 0.5 (ci_lower_bound) | 0.773 | 0.710 to 0.830 (97.5%) | met |
+| P2_ced_classification | auc_roc difference vs logistic_regression | >= 0.03 (point_and_ci) | -0.021 | -0.049 to 0.007 (97.5%) | fail |
+| S1_hb_vs_mean | mae reduction vs dummy_mean | >= 0.1 (point_and_ci) | 0.002 | -0.022 to 0.026 (95.0%) | fail |
+| S2_hb_vs_ridge | mae reduction vs ridge | >= 0.05 (point_and_ci) | 0.005 | -0.017 to 0.027 (95.0%) | fail |
+
+## Dashboard feature lists (selected in at least half of the 25 outer folds)
+
+* hb: age, anc_visits, hfias_score, prepreg_weight, height, education_mother, n_children
+* ced: anc_visits, education_mother, hfias_score, prepreg_weight, age, egg_freq, height, n_children
+
+## Files
+
+* results\tables\c00b_canary_too_good.csv
+* results\tables\d01_hypothesis_verdicts.csv
+* results\tables\d02_hypothesis_components.csv
+* results\tables\d03_hb_metrics.csv
+* results\tables\d04_ced_metrics.csv
+* results\tables\d05_confusion_matrices_mean_over_repetitions.csv
+* results\tables\d06_baseline_comparisons.csv
+* results\tables\d07_feature_selection_frequency.csv
+* results\tables\d08_exploratory_comparisons.csv
+* results\tables\d09_conformal_intervals.csv
+* results\tables\d10_ced_reliability_curve.csv
+* results\tables\d12_grouped_cv_per_subdistrict_hb.csv
+* results\tables\d12_grouped_cv_per_subdistrict_ced.csv
+* results\tables\d11_sensitivity_analyses.csv
+* results\tables\d13_sensitivity_sample_sizes.csv
+Report written to D:\ANEMIA-CED\anemia_ced_screening\results\report.md

@@ -1,0 +1,21 @@
+# Dashboard settings. Run `streamlit run app/Skrining.py` from the project root so this file is used.
+
+# Privacy defaults (proposal 3.7, data protection): serve only on this computer, send no usage statistics.
+[server]
+address = "localhost"
+headless = true
+
+[browser]
+gatherUsageStats = false
+
+# Hide developer menu items (Deploy, rerun options) for cadres using the prototype.
+[client]
+toolbarMode = "minimal"
+
+# Teal theme. Primary teal on white has a contrast ratio above 4.5:1 for text and buttons.
+[theme]
+base = "light"
+primaryColor = "#0f766e"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f0fdfa"
+textColor = "#1f2937"

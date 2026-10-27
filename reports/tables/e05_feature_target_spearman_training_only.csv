@@ -1,0 +1,19 @@
+target,feature,spearman_rho,n,note
+Hb (g/dL),Age (years),0.023,315,TRAINING SET ONLY
+Hb (g/dL),ANC visits,0.063,316,TRAINING SET ONLY
+Hb (g/dL),Egg consumption,0.02,316,TRAINING SET ONLY
+Hb (g/dL),Food taboo in pregnancy,-0.108,316,TRAINING SET ONLY
+Hb (g/dL),Height (cm),0.016,314,TRAINING SET ONLY
+Hb (g/dL),HFIAS score (0 to 27),-0.038,316,TRAINING SET ONLY
+Hb (g/dL),Number of children,0.09,316,TRAINING SET ONLY
+Hb (g/dL),Children under five,0.041,316,TRAINING SET ONLY
+Hb (g/dL),Pre-pregnancy weight (kg),0.105,316,TRAINING SET ONLY
+CED risk,Age (years),-0.217,327,TRAINING SET ONLY
+CED risk,ANC visits,-0.174,328,TRAINING SET ONLY
+CED risk,Egg consumption,-0.014,328,TRAINING SET ONLY
+CED risk,Food taboo in pregnancy,0.02,328,TRAINING SET ONLY
+CED risk,Height (cm),-0.03,326,TRAINING SET ONLY
+CED risk,HFIAS score (0 to 27),0.062,328,TRAINING SET ONLY
+CED risk,Number of children,-0.122,328,TRAINING SET ONLY
+CED risk,Children under five,0.029,328,TRAINING SET ONLY
+CED risk,Pre-pregnancy weight (kg),-0.461,328,TRAINING SET ONLY

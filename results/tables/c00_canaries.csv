@@ -1,0 +1,5 @@
+canary,r2,auc_roc,limit,passed,fits_checked,thresholds_from_inner_only
+label_permutation_hb,-0.03743325217330473,0.5128428220162664,"r2 <= 0.05, auc <= 0.6",True,,
+label_permutation_ced,,0.5042333303202868,auc <= 0.6,True,,
+fit_spy_hb,,,,True,80.0,True
+fit_spy_ced,,,,True,80.0,True

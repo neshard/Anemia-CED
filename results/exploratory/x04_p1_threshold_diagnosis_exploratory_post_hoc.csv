@@ -1,0 +1,10 @@
+label,quantity,mean,min,max
+"exploratory, post hoc",share_flagged,0.6778,0.6515,0.7096
+"exploratory, post hoc",share_flagged_among_anemic,0.7224,0.6706,0.7647
+"exploratory, post hoc",share_flagged_among_not_anemic,0.6656,0.6206,0.701
+"exploratory, post hoc",sd_true_hb,1.2256,1.2256,1.2256
+"exploratory, post hoc",sd_predicted_hb,0.2502,0.2097,0.3093
+"exploratory, post hoc",range_predicted_hb,1.8672,1.3137,2.6302
+"exploratory, post hoc",mean_pred_anemic,11.4084,11.3946,11.4195
+"exploratory, post hoc",mean_pred_not_anemic,11.4416,11.4213,11.4541
+"exploratory, post hoc",fold cut-off on predicted Hb (g/dL),11.533,11.4455,11.656

@@ -1,0 +1,83 @@
+# Pre-specified hypotheses and success criteria.
+# Source: thesis proposal (docs/proposal.pdf) Section 1.4, Table 1.1, and Section 3.8,
+# with the verdict, Holm and averaging rules approved on 2026-10-17 (see CHANGELOG.md).
+# Text in statement and success_criterion is documentation only. Only the structured
+# components decide. Changing this file after seeing results is a deviation.
+
+status: locked
+locked_on: 2026-10-17
+lock_reason: "Align with proposal Table 1.1 dated 2026-05-25"
+
+# Verdicts: supported, not_supported, inconclusive.
+# Component rules:
+#   point_and_ci   : pass if the point estimate and the whole CI are on the pass side,
+#                    fail if both are on the fail side, inconclusive otherwise.
+#   ci_lower_bound : the CI lower bound itself is compared with the value (met or not met).
+# A hypothesis is supported if every component passes or is met, not supported if any
+# component fails or is not met, and inconclusive otherwise.
+# Point estimates and CI bounds are averaged over the five repetitions. Each repetition
+# has its own percentile bootstrap over women (n_bootstrap resamples, own seed).
+alpha: 0.05
+n_bootstrap: 2000
+secondary_ci_level: 0.95
+# Holm across the two primary hypotheses. Component p-value = (resamples on the fail side
+# + 1) / (n_bootstrap + 1), averaged over repetitions. Hypothesis p-value = largest
+# component p-value. The primary hypothesis with the smaller p-value is judged at
+# holm_first_ci_level. The other is judged at holm_second_ci_level_if_first_supported if
+# the first is supported, otherwise at holm_first_ci_level. Criterion values never change.
+holm_family: [P1_anemia_screening, P2_ced_classification]
+holm_first_ci_level: 0.975
+holm_second_ci_level_if_first_supported: 0.95
+paired_test_approximate: corrected_resampled_t   # reported only, conclusions rest on the bootstrap CI
+
+primary_hypotheses: [P1_anemia_screening, P2_ced_classification]
+secondary_hypotheses: [S1_hb_vs_mean, S2_hb_vs_ridge]
+
+hypotheses:
+  P1_anemia_screening:
+    statement: "Anemia screening from predicted hemoglobin reaches the feasibility criteria on out-of-fold predictions."
+    success_criterion: "Sensitivity of at least 0.70 and specificity of at least 0.40 on out-of-fold predictions, with the lower bound of the AUC confidence interval above 0.50."
+    target: hb
+    model: xgboost
+    threshold_rule: "cut-off on predicted Hb set on inner-fold predictions of each outer training set so that 70 percent of true anemia cases are flagged, applied unchanged to the outer test fold"
+    components:
+      - {metric: sensitivity, quantity: value, op: ">=", value: 0.70, rule: point_and_ci}
+      - {metric: specificity, quantity: value, op: ">=", value: 0.40, rule: point_and_ci}
+      - {metric: auc_roc, quantity: value, op: ">", value: 0.50, rule: ci_lower_bound}
+
+  P2_ced_classification:
+    statement: "The CED model reaches the AUC criterion and beats Logistic Regression."
+    success_criterion: "AUC of at least 0.70 with a confidence interval lower bound of at least 0.50, and at least 0.03 AUC above Logistic Regression."
+    target: ced
+    model: xgboost
+    threshold_rule: "Youden's index on inner-fold predictions (AUC does not depend on the threshold)"
+    components:
+      - {metric: auc_roc, quantity: value, op: ">=", value: 0.70, rule: point_and_ci}
+      - {metric: auc_roc, quantity: value, op: ">=", value: 0.50, rule: ci_lower_bound}
+      - {metric: auc_roc, quantity: difference, versus: logistic_regression, op: ">=", value: 0.03, rule: point_and_ci}
+
+  S1_hb_vs_mean:
+    statement: "Hemoglobin error against a mean-only baseline."
+    success_criterion: "MAE lower by at least 0.10 g/dL."
+    target: hb
+    model: xgboost
+    components:
+      - {metric: mae, quantity: reduction, versus: dummy_mean, op: ">=", value: 0.10, rule: point_and_ci}
+
+  S2_hb_vs_ridge:
+    statement: "Hemoglobin error against Ridge regression."
+    success_criterion: "MAE lower by at least 0.05 g/dL."
+    target: hb
+    model: xgboost
+    components:
+      - {metric: mae, quantity: reduction, versus: ridge, op: ">=", value: 0.05, rule: point_and_ci}
+
+# Reported without a verdict (proposal Sections 1.4 and 3.5).
+exploratory:
+  - "CED: XGBoost with SMOTE-NC, retuned with the same budget, against the main model"
+  - "CED: XGBoost with class weighting (scale_pos_weight), retuned with the same budget, against the main model"
+  - "Hb: XGBoost with SMOGN, retuned with the same budget, against the main model"
+  - "Anemia: XGBClassifier on the binary label (Hb below 11.0) against regression followed by the threshold"
+  - "Hb: split-conformal intervals with 90 percent nominal coverage (empirical coverage and mean width)"
+  - "CED: reliability curve and Brier score"
+  - "Decision Tree and Random Forest baselines for both models"

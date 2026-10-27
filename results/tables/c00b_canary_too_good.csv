@@ -1,0 +1,3 @@
+canary,value,limit,passed
+too_good_ced_auc,0.7734460212721083,0.9,True
+too_good_hb_r2,-0.01700621598745866,0.5,True

@@ -1,0 +1,19 @@
+# Patient data never goes into version control
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+# Generated model files and local databases
+artifacts/*
+!artifacts/.gitkeep
+*.sqlite
+*.db
+__pycache__/
+.pytest_cache/
+.venv/
+# Per-woman outputs (anonymous ID with Hb, MUAC or subdistrict) stay local
+results/oof/
+results/checkpoints/
+results/logs/
+results/exploratory/x02_dedup_runs/
+archive/holdout_design_2026-10-14/holdout_split.json

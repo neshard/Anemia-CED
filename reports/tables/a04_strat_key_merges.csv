@@ -1,0 +1,3 @@
+from,to,n_rows,reason
+Mild|NA,Normal|NA,1,below min_cell_count
+NA|1,Normal|1,5,below min_cell_count

@@ -1,0 +1,4 @@
+policy,n_hb_target,n_normal,n_mild,n_moderate,n_severe,n_hb_zero_never_tested
+missing,396,311,57,28,0,15
+severe_drop,396,311,57,28,16,15
+severe_floor,412,311,57,28,16,15

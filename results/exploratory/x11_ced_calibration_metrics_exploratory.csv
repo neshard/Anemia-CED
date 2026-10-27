@@ -1,0 +1,9 @@
+label,model,metric,point,ci_low,ci_high,ci_level,point_min,point_max,n_repetitions
+"exploratory, pre-specified (proposal 2.8 and 3.6)",uncalibrated,brier,0.1588,0.1394,0.1788,0.95,0.1546,0.1622,5
+"exploratory, pre-specified (proposal 2.8 and 3.6)",uncalibrated,auc_roc,0.7734,0.7211,0.8238,0.95,0.7674,0.7812,5
+"exploratory, pre-specified (proposal 2.8 and 3.6)",logistic_regression_reference,brier,0.1523,0.1331,0.1724,0.95,0.149,0.1569,5
+"exploratory, pre-specified (proposal 2.8 and 3.6)",logistic_regression_reference,auc_roc,0.7944,0.7435,0.8425,0.95,0.781,0.8018,5
+"exploratory, pre-specified (proposal 2.8 and 3.6)",platt,brier,0.1604,0.1404,0.181,0.95,0.1561,0.1642,5
+"exploratory, pre-specified (proposal 2.8 and 3.6)",platt,auc_roc,0.7687,0.715,0.8198,0.95,0.7631,0.7774,5
+"exploratory, pre-specified (proposal 2.8 and 3.6)",isotonic,brier,0.1624,0.1409,0.1845,0.95,0.1562,0.1676,5
+"exploratory, pre-specified (proposal 2.8 and 3.6)",isotonic,auc_roc,0.7555,0.7012,0.8087,0.95,0.7456,0.7649,5

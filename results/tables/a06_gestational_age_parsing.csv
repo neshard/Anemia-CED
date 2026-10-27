@@ -1,0 +1,6 @@
+item,value
+rule,"text with minggu or week is weeks, with bulan or month is months x 4.345, bare numbers are weeks"
+bare numbers,394
+"bare numbers of 9 or less (ambiguous, could be months)",38
+unparsed,1
+Hb-model women without usable gestational age,1

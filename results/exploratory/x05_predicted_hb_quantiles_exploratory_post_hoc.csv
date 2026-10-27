@@ -1,0 +1,6 @@
+label,quantile,predicted_hb_mean_over_repetitions
+"exploratory, post hoc",0.05,11.04
+"exploratory, post hoc",0.25,11.29
+"exploratory, post hoc",0.5,11.433
+"exploratory, post hoc",0.75,11.578
+"exploratory, post hoc",0.95,11.85

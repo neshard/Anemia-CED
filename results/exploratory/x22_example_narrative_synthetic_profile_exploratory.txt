@@ -1,0 +1,7 @@
+[exploratory, pre-specified (proposal 2.8 and 3.6)] Synthetic median profile, not a real woman.
+
+CED:
+Perkiraan peluang risiko KEK untuk ibu ini adalah 32%. Angka ini di atas ambang skrining 29%, sehingga ibu ini dianjurkan untuk diukur LILA-nya oleh petugas. Faktor yang paling menaikkan perkiraan model: jumlah kunjungan ANC (3 kali), pendidikan ibu (SMA/SMK). Faktor yang paling menurunkan perkiraan model: berat badan sebelum hamil (53 kg). Penjelasan ini menunjukkan bagaimana model sampai pada perkiraannya, bukan penyebab kondisi ibu. Faktor yang disebut tidak berarti menyebabkan risiko tersebut. Hasil ini adalah perkiraan untuk membantu skrining awal, bukan diagnosis. Hasil ini tidak menggantikan pengukuran LILA atau pemeriksaan Hb di fasilitas kesehatan.
+
+Hb:
+Perkiraan Hb: 11,6 g/dL (rentang 9,5 sampai 13,7 g/dL). Perkiraan ini hanya indikatif. Dalam evaluasi, model Hb tidak lebih akurat daripada menebak nilai rata-rata, sehingga penjelasan faktor tidak ditampilkan. Hasil ini adalah perkiraan untuk membantu skrining awal, bukan diagnosis. Hasil ini tidak menggantikan pengukuran LILA atau pemeriksaan Hb di fasilitas kesehatan.

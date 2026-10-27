@@ -1,0 +1,123 @@
+2026-10-18 02:29:48,790 INFO anemia_ced: Library versions written to D:\ANEMIA-CED\anemia_ced_screening\reports\library_versions.json
+2026-10-18 02:29:48,807 INFO anemia_ced: seed=42
+2026-10-18 02:29:48,807 INFO anemia_ced: outer CV=5 folds x 5 repeats (stratified on anemia class x CED)
+2026-10-18 02:29:48,807 INFO anemia_ced: inner CV=3 folds (tuning and thresholds), min stratum=5
+2026-10-18 02:29:48,807 INFO anemia_ced: tuning=Optuna tpe, 30 trials for every tuned model, objective={'regression': 'mae', 'classification': 'roc_auc'}
+2026-10-18 02:29:48,807 INFO anemia_ced: features=per fold, forced ['prepreg_weight', 'anc_visits', 'hfias_score'] plus best of the rest, k=7, RF 300 trees
+2026-10-18 02:29:48,807 INFO anemia_ced: thresholds: Hb flags 70% of true cases, CED youden plus sensitivity [0.8, 0.9]
+2026-10-18 02:29:48,807 INFO anemia_ced: bootstrap=2000 resamples per repetition, CI=0.95
+2026-10-18 02:29:48,807 INFO anemia_ced: versions: python 3.11.6, numpy 1.26.4, pandas 2.2.3, scipy 1.13.1, sklearn 1.5.2, imblearn 0.12.4, xgboost 2.1.3, shap 0.46.0, smogn unknown, optuna 4.1.0, statsmodels 0.14.4, matplotlib 3.9.2, yaml 6.0.2, joblib 1.4.2, streamlit 1.40.1
+2026-10-18 02:29:48,913 INFO src.cleaning: Cleaning done: 418 of 420 rows usable
+2026-10-18 02:30:09,427 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 1/25 done (r0 f0), elapsed 20s, about 492s left
+2026-10-18 02:30:09,427 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 2/25 done (r0 f1), elapsed 20s, about 236s left
+2026-10-18 02:30:09,427 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 3/25 done (r0 f2), elapsed 20s, about 150s left
+2026-10-18 02:30:09,427 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 4/25 done (r0 f3), elapsed 20s, about 108s left
+2026-10-18 02:30:09,531 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 5/25 done (r0 f4), elapsed 21s, about 82s left
+2026-10-18 02:30:09,538 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 6/25 done (r1 f0), elapsed 21s, about 65s left
+2026-10-18 02:30:09,540 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 7/25 done (r1 f1), elapsed 21s, about 53s left
+2026-10-18 02:30:09,540 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 8/25 done (r1 f2), elapsed 21s, about 44s left
+2026-10-18 02:30:21,199 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 9/25 done (r1 f3), elapsed 32s, about 57s left
+2026-10-18 02:30:21,199 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 10/25 done (r1 f4), elapsed 32s, about 48s left
+2026-10-18 02:30:21,236 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 11/25 done (r2 f0), elapsed 32s, about 41s left
+2026-10-18 02:30:21,236 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 12/25 done (r2 f1), elapsed 32s, about 35s left
+2026-10-18 02:30:21,236 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 13/25 done (r2 f2), elapsed 32s, about 30s left
+2026-10-18 02:30:24,545 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 14/25 done (r2 f3), elapsed 36s, about 28s left
+2026-10-18 02:30:24,545 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 15/25 done (r2 f4), elapsed 36s, about 24s left
+2026-10-18 02:30:24,553 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 16/25 done (r3 f0), elapsed 36s, about 20s left
+2026-10-18 02:30:35,640 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 17/25 done (r3 f1), elapsed 47s, about 22s left
+2026-10-18 02:30:37,496 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 18/25 done (r3 f2), elapsed 49s, about 19s left
+2026-10-18 02:30:37,496 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 19/25 done (r3 f3), elapsed 49s, about 15s left
+2026-10-18 02:30:37,496 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 20/25 done (r3 f4), elapsed 49s, about 12s left
+2026-10-18 02:30:37,502 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 21/25 done (r4 f0), elapsed 49s, about 9s left
+2026-10-18 02:30:37,502 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 22/25 done (r4 f1), elapsed 49s, about 7s left
+2026-10-18 02:30:37,586 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 23/25 done (r4 f2), elapsed 49s, about 4s left
+2026-10-18 02:30:38,925 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 24/25 done (r4 f3), elapsed 50s, about 2s left
+2026-10-18 02:30:46,705 INFO src.nested_cv: [main__hb__xgboost__smogn] fold 25/25 done (r4 f4), elapsed 58s, about 0s left
+2026-10-18 02:31:02,757 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 1/25 done (r0 f0), elapsed 16s, about 384s left
+2026-10-18 02:31:02,757 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 2/25 done (r0 f1), elapsed 16s, about 184s left
+2026-10-18 02:31:02,757 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 3/25 done (r0 f2), elapsed 16s, about 117s left
+2026-10-18 02:31:02,757 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 4/25 done (r0 f3), elapsed 16s, about 84s left
+2026-10-18 02:31:02,757 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 5/25 done (r0 f4), elapsed 16s, about 64s left
+2026-10-18 02:31:02,760 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 6/25 done (r1 f0), elapsed 16s, about 51s left
+2026-10-18 02:31:02,760 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 7/25 done (r1 f1), elapsed 16s, about 41s left
+2026-10-18 02:31:02,760 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 8/25 done (r1 f2), elapsed 16s, about 34s left
+2026-10-18 02:31:14,370 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 9/25 done (r1 f3), elapsed 28s, about 49s left
+2026-10-18 02:31:14,370 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 10/25 done (r1 f4), elapsed 28s, about 41s left
+2026-10-18 02:31:14,764 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 11/25 done (r2 f0), elapsed 28s, about 36s left
+2026-10-18 02:31:14,764 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 12/25 done (r2 f1), elapsed 28s, about 30s left
+2026-10-18 02:31:14,764 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 13/25 done (r2 f2), elapsed 28s, about 26s left
+2026-10-18 02:31:15,210 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 14/25 done (r2 f3), elapsed 28s, about 22s left
+2026-10-18 02:31:16,022 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 15/25 done (r2 f4), elapsed 29s, about 20s left
+2026-10-18 02:31:17,317 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 16/25 done (r3 f0), elapsed 31s, about 17s left
+2026-10-18 02:31:29,924 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 17/25 done (r3 f1), elapsed 43s, about 20s left
+2026-10-18 02:31:31,589 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 18/25 done (r3 f2), elapsed 45s, about 17s left
+2026-10-18 02:31:31,589 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 19/25 done (r3 f3), elapsed 45s, about 14s left
+2026-10-18 02:31:32,047 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 20/25 done (r3 f4), elapsed 45s, about 11s left
+2026-10-18 02:31:32,053 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 21/25 done (r4 f0), elapsed 45s, about 9s left
+2026-10-18 02:31:34,507 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 22/25 done (r4 f1), elapsed 48s, about 7s left
+2026-10-18 02:31:34,704 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 23/25 done (r4 f2), elapsed 48s, about 4s left
+2026-10-18 02:31:34,704 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 24/25 done (r4 f3), elapsed 48s, about 2s left
+2026-10-18 02:31:41,369 INFO src.nested_cv: [main__ced__xgboost__smotenc] fold 25/25 done (r4 f4), elapsed 55s, about 0s left
+2026-10-18 02:31:53,993 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 1/25 done (r0 f0), elapsed 13s, about 302s left
+2026-10-18 02:31:53,993 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 2/25 done (r0 f1), elapsed 13s, about 145s left
+2026-10-18 02:31:53,993 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 3/25 done (r0 f2), elapsed 13s, about 92s left
+2026-10-18 02:31:53,993 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 4/25 done (r0 f3), elapsed 13s, about 66s left
+2026-10-18 02:31:53,993 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 5/25 done (r0 f4), elapsed 13s, about 50s left
+2026-10-18 02:31:53,998 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 6/25 done (r1 f0), elapsed 13s, about 40s left
+2026-10-18 02:31:53,998 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 7/25 done (r1 f1), elapsed 13s, about 32s left
+2026-10-18 02:31:53,998 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 8/25 done (r1 f2), elapsed 13s, about 27s left
+2026-10-18 02:31:59,234 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 9/25 done (r1 f3), elapsed 18s, about 32s left
+2026-10-18 02:32:01,520 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 10/25 done (r1 f4), elapsed 20s, about 30s left
+2026-10-18 02:32:01,710 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 11/25 done (r2 f0), elapsed 20s, about 26s left
+2026-10-18 02:32:01,797 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 12/25 done (r2 f1), elapsed 20s, about 22s left
+2026-10-18 02:32:01,971 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 13/25 done (r2 f2), elapsed 21s, about 19s left
+2026-10-18 02:32:03,458 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 14/25 done (r2 f3), elapsed 22s, about 17s left
+2026-10-18 02:32:03,458 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 15/25 done (r2 f4), elapsed 22s, about 15s left
+2026-10-18 02:32:04,221 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 16/25 done (r3 f0), elapsed 23s, about 13s left
+2026-10-18 02:32:07,280 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 17/25 done (r3 f1), elapsed 26s, about 12s left
+2026-10-18 02:32:12,164 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 18/25 done (r3 f2), elapsed 31s, about 12s left
+2026-10-18 02:32:12,164 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 19/25 done (r3 f3), elapsed 31s, about 10s left
+2026-10-18 02:32:12,164 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 20/25 done (r3 f4), elapsed 31s, about 8s left
+2026-10-18 02:32:12,168 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 21/25 done (r4 f0), elapsed 31s, about 6s left
+2026-10-18 02:32:14,265 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 22/25 done (r4 f1), elapsed 33s, about 4s left
+2026-10-18 02:32:14,265 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 23/25 done (r4 f2), elapsed 33s, about 3s left
+2026-10-18 02:32:14,265 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 24/25 done (r4 f3), elapsed 33s, about 1s left
+2026-10-18 02:32:14,265 INFO src.nested_cv: [main__ced__xgboost_class_weighted__class_weighting] fold 25/25 done (r4 f4), elapsed 33s, about 0s left
+2026-10-18 02:32:24,504 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 1/25 done (r0 f0), elapsed 10s, about 245s left
+2026-10-18 02:32:25,211 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 2/25 done (r0 f1), elapsed 11s, about 126s left
+2026-10-18 02:32:26,830 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 3/25 done (r0 f2), elapsed 13s, about 92s left
+2026-10-18 02:32:26,830 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 4/25 done (r0 f3), elapsed 13s, about 66s left
+2026-10-18 02:32:26,830 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 5/25 done (r0 f4), elapsed 13s, about 50s left
+2026-10-18 02:32:26,834 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 6/25 done (r1 f0), elapsed 13s, about 40s left
+2026-10-18 02:32:26,834 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 7/25 done (r1 f1), elapsed 13s, about 32s left
+2026-10-18 02:32:26,834 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 8/25 done (r1 f2), elapsed 13s, about 27s left
+2026-10-18 02:32:36,609 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 9/25 done (r1 f3), elapsed 22s, about 40s left
+2026-10-18 02:32:36,609 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 10/25 done (r1 f4), elapsed 22s, about 33s left
+2026-10-18 02:32:36,900 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 11/25 done (r2 f0), elapsed 23s, about 29s left
+2026-10-18 02:32:36,900 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 12/25 done (r2 f1), elapsed 23s, about 24s left
+2026-10-18 02:32:36,900 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 13/25 done (r2 f2), elapsed 23s, about 21s left
+2026-10-18 02:32:37,648 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 14/25 done (r2 f3), elapsed 23s, about 18s left
+2026-10-18 02:32:37,648 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 15/25 done (r2 f4), elapsed 23s, about 16s left
+2026-10-18 02:32:39,765 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 16/25 done (r3 f0), elapsed 25s, about 14s left
+2026-10-18 02:32:47,046 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 17/25 done (r3 f1), elapsed 33s, about 15s left
+2026-10-18 02:32:47,436 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 18/25 done (r3 f2), elapsed 33s, about 13s left
+2026-10-18 02:32:47,436 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 19/25 done (r3 f3), elapsed 33s, about 10s left
+2026-10-18 02:32:47,436 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 20/25 done (r3 f4), elapsed 33s, about 8s left
+2026-10-18 02:32:48,182 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 21/25 done (r4 f0), elapsed 34s, about 6s left
+2026-10-18 02:32:48,449 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 22/25 done (r4 f1), elapsed 34s, about 5s left
+2026-10-18 02:32:48,707 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 23/25 done (r4 f2), elapsed 34s, about 3s left
+2026-10-18 02:32:48,873 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 24/25 done (r4 f3), elapsed 35s, about 1s left
+2026-10-18 02:32:53,090 INFO src.nested_cv: [main__anemia_binary__direct_xgb_classifier__direct] fold 25/25 done (r4 f4), elapsed 39s, about 0s left
+=== 06_exploratory | config used ===
+  seed=42
+  outer CV=5 folds x 5 repeats (stratified on anemia class x CED)
+  inner CV=3 folds (tuning and thresholds), min stratum=5
+  tuning=Optuna tpe, 30 trials for every tuned model, objective={'regression': 'mae', 'classification': 'roc_auc'}
+  features=per fold, forced ['prepreg_weight', 'anc_visits', 'hfias_score'] plus best of the rest, k=7, RF 300 trees
+  thresholds: Hb flags 70% of true cases, CED youden plus sensitivity [0.8, 0.9]
+  bootstrap=2000 resamples per repetition, CI=0.95
+  versions: python 3.11.6, numpy 1.26.4, pandas 2.2.3, scipy 1.13.1, sklearn 1.5.2, imblearn 0.12.4, xgboost 2.1.3, shap 0.46.0, smogn unknown, optuna 4.1.0, statsmodels 0.14.4, matplotlib 3.9.2, yaml 6.0.2, joblib 1.4.2, streamlit 1.40.1
+hb xgboost smogn: 25 outer folds done
+ced xgboost smotenc: 25 outer folds done
+ced xgboost_class_weighted class_weighting: 25 outer folds done
+anemia_binary direct_xgb_classifier direct: 25 outer folds done

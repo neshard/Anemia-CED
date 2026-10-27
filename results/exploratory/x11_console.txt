@@ -1,0 +1,95 @@
+2026-10-21 22:35:56,551 INFO anemia_ced: Library versions written to D:\ANEMIA-CED\anemia_ced_screening\reports\library_versions.json
+2026-10-21 22:35:56,564 INFO anemia_ced: seed=42
+2026-10-21 22:35:56,564 INFO anemia_ced: outer CV=5 folds x 5 repeats (stratified on anemia class x CED)
+2026-10-21 22:35:56,564 INFO anemia_ced: inner CV=3 folds (tuning and thresholds), min stratum=5
+2026-10-21 22:35:56,564 INFO anemia_ced: tuning=Optuna tpe, 30 trials for every tuned model, objective={'regression': 'mae', 'classification': 'roc_auc'}
+2026-10-21 22:35:56,564 INFO anemia_ced: features=per fold, forced ['prepreg_weight', 'anc_visits', 'hfias_score'] plus best of the rest, k=7, RF 300 trees
+2026-10-21 22:35:56,564 INFO anemia_ced: thresholds: Hb flags 70% of true cases, CED youden plus sensitivity [0.8, 0.9]
+2026-10-21 22:35:56,571 INFO anemia_ced: bootstrap=2000 resamples per repetition, CI=0.95
+2026-10-21 22:35:56,571 INFO anemia_ced: versions: python 3.11.6, numpy 1.26.4, pandas 2.2.3, scipy 1.13.1, sklearn 1.5.2, imblearn 0.12.4, xgboost 2.1.3, shap 0.46.0, smogn unknown, optuna 4.1.0, statsmodels 0.14.4, matplotlib 3.9.2, yaml 6.0.2, joblib 1.4.2, streamlit 1.40.1
+2026-10-21 22:35:56,653 INFO src.cleaning: Cleaning done: 418 of 420 rows usable
+D:\ANEMIA-CED\anemia_ced_screening\.venv\Lib\site-packages\joblib\externals\loky\backend\context.py:136: UserWarning: Could not find the number of physical cores for the following reason:
+[WinError 2] The system cannot find the file specified
+Returning the number of logical cores instead. You can silence this warning by setting LOKY_MAX_CPU_COUNT to the number of cores you want to use.
+  warnings.warn(
+  File "D:\ANEMIA-CED\anemia_ced_screening\.venv\Lib\site-packages\joblib\externals\loky\backend\context.py", line 257, in _count_physical_cores
+    cpu_info = subprocess.run(
+               ^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python311\Lib\subprocess.py", line 548, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python311\Lib\subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "C:\Program Files\Python311\Lib\subprocess.py", line 1538, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+=== 11_shap_analysis | config used ===
+  seed=42
+  outer CV=5 folds x 5 repeats (stratified on anemia class x CED)
+  inner CV=3 folds (tuning and thresholds), min stratum=5
+  tuning=Optuna tpe, 30 trials for every tuned model, objective={'regression': 'mae', 'classification': 'roc_auc'}
+  features=per fold, forced ['prepreg_weight', 'anc_visits', 'hfias_score'] plus best of the rest, k=7, RF 300 trees
+  thresholds: Hb flags 70% of true cases, CED youden plus sensitivity [0.8, 0.9]
+  bootstrap=2000 resamples per repetition, CI=0.95
+  versions: python 3.11.6, numpy 1.26.4, pandas 2.2.3, scipy 1.13.1, sklearn 1.5.2, imblearn 0.12.4, xgboost 2.1.3, shap 0.46.0, smogn unknown, optuna 4.1.0, statsmodels 0.14.4, matplotlib 3.9.2, yaml 6.0.2, joblib 1.4.2, streamlit 1.40.1
+target  fold_models  max_abs_prediction_difference  selected_features_identical  max_shap_additivity_error
+    hb           25                   4.766846e-07                         True                   0.000014
+   ced           25                   2.979889e-08                         True                   0.000003
+target  rank          feature  mean_abs_shap  min_over_repetitions  max_over_repetitions
+    hb     1   prepreg_weight         0.0875                0.0729                0.1039
+    hb     2              age         0.0817                0.0636                0.1049
+    hb     3       anc_visits         0.0742                0.0622                0.0924
+    hb     4 education_mother         0.0481                0.0321                0.0623
+    hb     5       n_children         0.0414                0.0171                0.0658
+    hb     6           height         0.0334                0.0294                0.0444
+    hb     7      hfias_score         0.0213                0.0175                0.0269
+    hb     8         egg_freq         0.0116                0.0041                0.0200
+    hb     9       food_taboo         0.0057                0.0000                0.0163
+    hb    10           income         0.0034                0.0000                0.0115
+    hb    11         n_under5         0.0022                0.0000                0.0042
+   ced     1   prepreg_weight         0.8375                0.7257                0.9364
+   ced     2       anc_visits         0.3061                0.2526                0.3868
+   ced     3              age         0.1631                0.1272                0.2150
+   ced     4 education_mother         0.1096                0.0766                0.1573
+   ced     5           height         0.0617                0.0447                0.0782
+   ced     6         egg_freq         0.0378                0.0185                0.0682
+   ced     7       n_children         0.0265                0.0058                0.0555
+   ced     8      hfias_score         0.0163                0.0057                0.0226
+   ced     9         n_under5         0.0043                0.0000                0.0216
+   ced    10           income         0.0000                0.0000                0.0000
+   ced    11       food_taboo         0.0000                0.0000                0.0000
+target  fold_models  mean_pairwise_spearman_mean_abs_shap  min_pairwise_spearman  share_same_top3_set_across_repetitions  share_same_top1_across_repetitions  women
+    hb           25                                 0.650                  0.138                                   0.108                               0.383    396
+   ced           25                                 0.834                  0.507                                   0.429                               0.919    410
+target importance  n_features  spearman_vs_mean_abs_shap
+   ced       gain           8                      0.976
+   ced      cover           8                      0.619
+   ced     weight           8                      0.922
+    hb       gain           7                      0.714
+    hb      cover           7                      0.750
+    hb     weight           7                      0.607
+target  n_records                                                                              features  base_value  max_additivity_error
+   ced        410 anc_visits|hfias_score|prepreg_weight|age|height|n_children|education_mother|egg_freq   -0.991946              0.000003
+    hb        396          age|anc_visits|hfias_score|prepreg_weight|height|n_children|education_mother   11.432139              0.000012
+[exploratory, pre-specified (proposal 2.8 and 3.6)] Synthetic median profile, not a real woman.
+
+CED:
+Perkiraan peluang risiko KEK untuk ibu ini adalah 32%. Angka ini di atas ambang skrining 29%, sehingga ibu ini dianjurkan untuk diukur LILA-nya oleh petugas. Faktor yang paling menaikkan perkiraan model: jumlah kunjungan ANC (3 kali), pendidikan ibu (SMA/SMK). Faktor yang paling menurunkan perkiraan model: berat badan sebelum hamil (53 kg). Penjelasan ini menunjukkan bagaimana model sampai pada perkiraannya, bukan penyebab kondisi ibu. Faktor yang disebut tidak berarti menyebabkan risiko tersebut. Hasil ini adalah perkiraan untuk membantu skrining awal, bukan diagnosis. Hasil ini tidak menggantikan pengukuran LILA atau pemeriksaan Hb di fasilitas kesehatan.
+
+Hb:
+Perkiraan Hb: 11,6 g/dL (rentang 9,5 sampai 13,7 g/dL). Perkiraan ini hanya indikatif. Dalam evaluasi, model Hb tidak lebih akurat daripada menebak nilai rata-rata, sehingga penjelasan faktor tidak ditampilkan. Hasil ini adalah perkiraan untuk membantu skrining awal, bukan diagnosis. Hasil ini tidak menggantikan pengukuran LILA atau pemeriksaan Hb di fasilitas kesehatan.
+
+Written:
+  results\exploratory\x17_shap_global_ranking_out_of_sample_exploratory.csv
+  results\exploratory\x18_shap_stability_exploratory.csv
+  results\exploratory\x19_fold_model_reproduction_and_additivity_exploratory.csv
+  results/exploratory/figures/x_fig02_shap_global_ced.png
+  results/exploratory/figures/x_fig02_shap_global_hb.png
+  artifacts/explainer_ced.joblib
+  results/exploratory/figures/x_fig03_shap_beeswarm_final_ced.png
+  artifacts/explainer_hb.joblib
+  results/exploratory/figures/x_fig03_shap_beeswarm_final_hb.png
+  results\exploratory\x20_shap_vs_builtin_importance_final_exploratory.csv
+  results\exploratory\x21_final_model_explainer_check_exploratory.csv
+  results/exploratory/figures/x_fig04_example_waterfall_ced_synthetic_profile.png
+  results\exploratory\x22_example_narrative_synthetic_profile_exploratory.txt

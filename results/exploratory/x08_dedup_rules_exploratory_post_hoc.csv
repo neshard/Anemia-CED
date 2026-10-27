@@ -1,0 +1,3 @@
+label,rule,max_differing_fields_of_21,duplicate_clusters,records_removed,removed_from_hb_model,removed_from_ced_model
+"exploratory, post hoc",strict,0,2,2,2,2
+"exploratory, post hoc",loose,1,5,5,5,5

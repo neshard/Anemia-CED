@@ -1,0 +1,297 @@
+# Central configuration for the anemia and CED screening project.
+# Every path, threshold, seed, and column mapping lives here so that no
+# experiment script needs hard-coded values.
+
+project:
+  name: anemia_ced_screening
+  random_seed: 42
+  # true only for the synthetic end-to-end smoke run. Skips the locked-hypotheses gate.
+  smoke_test: false
+
+paths:
+  raw_data: data/raw/dataset.csv
+  processed_dir: data/processed
+  artifacts_dir: artifacts
+  reports_tables: reports/tables
+  reports_figures: reports/figures
+  versions_file: reports/library_versions.json
+  hypotheses: config/hypotheses.yaml
+  results_dir: results
+
+data:
+  # data/raw/dataset.csv is the CSV export of the Google Forms "Form Responses 1" sheet.
+  source_sheet: "Form Responses 1"
+  # Loading stops if the file does not have exactly this many data rows (null disables the check).
+  expected_row_count: 420
+  # Asserted after cleaning. Any change to the data or the cleaning rules stops the run here.
+  expected_counts:
+    deduplicated: 419
+    hb_model: 396
+    ced_model: 410
+  csv_sep: ";"
+  csv_encoding: cp1252
+  # Numeric fields may use a dot or a comma as decimal mark ("10.5" or "10,5").
+  # src/cleaning.py accepts both, so the decimal export needs no change here.
+
+# Raw CSV header (exact text, including trailing spaces) for each canonical name.
+# Only these columns are read. Everything else (GPS, phone status, dates,
+# free text) is discarded at load time so it can never reach a model or a log.
+columns:
+  respondent_code: "Kode Responden"      # used only to count duplicates, then dropped
+  health_center: "Puskesmas"
+  district: "Kecamatan "
+  age: "Usia "
+  n_children: "Jumlah anak"
+  n_under5: "Jumlah anak bayi/balita (<5 tahun)"
+  education_mother: "Pendidikan terakhir ibu hamil"
+  education_husband: "Pendidikan terakhir suami"
+  income: "Kisaran pendapatan bulanan keluarga"
+  gpa_raw: "Paritas (G_P_A_)"
+  gestational_age_raw: "Usia kehamilan saat ini"
+  muac: "LILA (Lingkar Lengan Atas)"
+  prepreg_weight: "Berat badan sebelum kehamilan"
+  height: "Tinggi badan "
+  hb: "Hasil pemeriksaan Hb (g/dL)"
+  hb_date_raw: "Tanggal pemeriksaan Hb"      # parsed to a gap in days, then dropped
+  interview_date_raw: "Tanggal wawancara"
+  hb_ever_tested: "Apakah ibu pernah melakukan pemeriksaan darah (Hb) selama kehamilan ini? "
+  anc_visits: "Sejauh ini, ibu sudah berapa kali ANC?"
+  food_taboo: "Apakah ibu memiliki pantangan makanan khusus selama hamil?"
+  egg_freq: "Seberapa sering kamu mengonsumsi makanan sumber zat besi hewani berikut dalam 1 bulan terakhir?   [Telur ayam]"
+  hfias_q1: "Pada 4 minggu terakhir, apakah ibu merasa khawatir bahwa keluarga ibu tidak memiliki cukup makanan?"
+  hfias_q2: "Pada 4 minggu terakhir, apakah pernah terjadi bahwa ibu atau anggota keluarga ibu tidak bisa makan makanan yang diinginkan karena kekurangan uang atau krisis makanan?"
+  hfias_q3: "Pada 4 minggu terakhir, apakah pernah terjadi bahwa ibu atau anggota keluarga harus makan makanan yang tidak beragam/kurang variasi karena keterbatasan seumber daya?"
+  hfias_q4: "Pada 4 minggu terakhir, apakah pernah terjadi bahwa ibu atau anggota keluarga ibu harus makan makanan yang tidak disukai karena kekurangan uang atau krisis makanan?"
+  hfias_q5: "Pada 4 minggu terakhir, apakah pernah terjadi bahwa ibu atau anggota keluarga ibu harus makan dengan porsi yang lebih sedikit dari yang anda pikir seharusnya dimakan karena kekurangan makanan untuk dimakan?"
+  hfias_q6: "Pada 4 minggu terakhir, apakah pernah terjadi bahwa ibu atau anggota keluarga lain harus mengurangi frekuensi makan dalam sehari karena kekurangan makanan untuk dimakan?"
+  hfias_q7: "Pada 4 minggu terakhir, apakah ibu pernah mengalami tidak ada makanan apa pun di dalam rumah karena kekurangan uang untuk membeli makanan?"
+  hfias_q8: "Pada 4 minggu terakhir, apakah pernah terjadi bahwa ibu atau anggota keluarga Anda tidur dalam keadaan lapar karena tidak ada cukup makanan untuk dimakan?"
+  hfias_q9: "Pada 4 minggu terakhir, apakah pernah terjadi bahwa ibu atau anggota keluarga ibu tidak makan seharian karena tidak ada cukup makanan untuk dimakan?"
+
+# Canonical names of identifier-like columns. They are removed after loading
+# and the leakage guard refuses any feature matrix that contains them.
+identifier_columns: [respondent_code]
+
+# ---------------------------------------------------------------------------
+# Features (proposal Section 3.3). "hfias_score" is the composite of the nine
+# HFIAS items computed by src/hfias.py, never the items themselves.
+# ---------------------------------------------------------------------------
+features:
+  # The 11 candidate features. Main analysis: per-fold selection from this pool.
+  candidate_pool: [age, n_children, n_under5, prepreg_weight, height, anc_visits,
+                   hfias_score, education_mother, income, egg_freq, food_taboo]
+  numeric: [age, anc_visits, height, n_children, n_under5, prepreg_weight, hfias_score]
+  ordinal: [egg_freq, education_mother, income]
+  binary: [food_taboo]
+  nominal: []
+  # Fixed preliminary set (proposal Table 3.2), used only as a sensitivity analysis.
+  # It came from an earlier exploratory analysis on women who are also in the CV data,
+  # so results with it are optimistic.
+  fixed_preliminary:
+    hb_model: [prepreg_weight, anc_visits, hfias_score, age, education_mother, height]
+    ced_model: [prepreg_weight, anc_visits, hfias_score, age, education_mother, egg_freq, n_children]
+
+# Columns that must never appear in any feature matrix. The guard also
+# catches one-hot or ColumnTransformer prefixed variants (for example "num__hb").
+forbidden_feature_columns:
+  hb_model: [hb, hb_target, anemia_class, anemia_binary, hb_zero_flag, hb_ever_tested, hb_date_gap_days, strat_key]
+  ced_model: [muac, ced, strat_key]
+  all_models: [respondent_code, anon_id, hb, muac, hb_target, anemia_class, anemia_binary, ced, strat_key,
+               hb_date_gap_days]
+
+# ---------------------------------------------------------------------------
+# Cleaning (proposal Section 3.2 and Table 3.1)
+# ---------------------------------------------------------------------------
+cleaning:
+  # One repeated submission (identical on every analysed column) is removed, keeping the first.
+  drop_duplicate_records: true
+  # Candidate feature values outside these closed limits become missing and are
+  # median-imputed inside the folds. Limits chosen before modeling (proposal 3.2).
+  plausible_ranges:
+    age: [15, 50]
+    height: [130, 190]
+    prepreg_weight: [30, 120]
+    anc_visits: [0, 20]
+    n_children: [0, 15]
+    n_under5: [0, 10]
+    gestational_age_weeks: [1, 45]
+  hb_max_valid: 20.0            # Hb above this is removed from the anemia model
+  muac_valid_range: [15.0, 45.0]
+  # Hb recorded as 0 is treated as not measured (15 of 16 such women were never tested).
+  hb_zero_policy: missing
+  hb_zero_floor_value: 5.0
+  gestational_age:
+    # A bare number with no "minggu" or "bulan" is read as weeks. Bare values of 9 or less
+    # are counted as ambiguous (they could be months) and reported, never printed per woman.
+    bare_number_unit: weeks
+    weeks_per_month: 4.345
+  gpa:
+    bare_number_policy: nan
+  dates:
+    # Hb test date and interview date, used only for the date-gap sensitivity analysis.
+    # Format d/m/yyyy. When the second part exceeds 12 the value is read as m/d/yyyy.
+    # A date is usable only if it parses and falls inside the window below. Values with
+    # years such as 25, 225, 1015 or 2015 are therefore not usable.
+    plausible_window: ["2024-01-01", "2026-01-31"]
+
+# Stateless text to code maps. These are fixed by the questionnaire design,
+# not learned from data, so applying them before any split cannot leak.
+encodings:
+  education:
+    "Tidak tamat SD": 0
+    "SD": 1
+    "SMP": 2
+    "SMA/SMK": 3
+    "Diploma/S1": 4
+    "Lebih tinggi dari S1 (S2/S3/Profesi)": 5
+  income:
+    "<1 juta": 0
+    "1-2 juta": 1
+    "2-3 juta": 2
+    ">3 juta": 3
+  food_frequency:
+    "Tidak pernah": 0
+    "1-3x/bulan": 1
+    "1x/minggu": 2
+    "2-3x/minggu": 3
+    "4-6x/minggu": 4
+    "?1x/hari": 5      # the export turned the "greater or equal" sign into "?"
+    "≥1x/hari": 5
+    ">=1x/hari": 5
+  yes_no:
+    "Ya": 1
+    "Tidak": 0
+  hb_ever_tested:
+    "Ya, pernah": 1
+    "Belum pernah": 0
+
+# ---------------------------------------------------------------------------
+# HFIAS (Coates, Swindale and Bilinsky 2007)
+# ---------------------------------------------------------------------------
+hfias:
+  items: [hfias_q1, hfias_q2, hfias_q3, hfias_q4, hfias_q5, hfias_q6, hfias_q7, hfias_q8, hfias_q9]
+  format: combined
+  combined_mapping:
+    "Tidak": 0
+    "Jarang (1-2x)": 1
+    "Kadang-kadang (3-10x)": 2
+    "Sering (>10x)": 3
+  occurrence_columns: []
+  frequency_columns: []
+  occurrence_mapping: {"Ya": 1, "Tidak": 0}
+  frequency_mapping: {"Jarang": 1, "Kadang-kadang": 2, "Sering": 3}
+  allow_binary: false
+  missing_policy: nan
+
+# ---------------------------------------------------------------------------
+# Labels
+# ---------------------------------------------------------------------------
+labels:
+  who_anemia_thresholds:   # lower bounds, g/dL. A value equal to a bound belongs to the higher class.
+    normal: 11.0
+    mild: 10.0
+    moderate: 7.0
+  anemia_binary_threshold: 11.0
+  ced_muac_threshold: 23.5   # CED risk when recorded MUAC < 23.5, which is 23 or less for whole-cm values
+  # Trimester-specific anemia cutoffs (WHO 2024), sensitivity analysis only.
+  trimester:
+    first_max_week: 13
+    second_max_week: 27
+    cutoffs: {first: 11.0, second: 10.5, third: 11.0}
+
+# ---------------------------------------------------------------------------
+# Protocol (proposal Sections 3.3 to 3.8 and the approved answers of 2026-10-17)
+# ---------------------------------------------------------------------------
+cv:
+  outer_n_splits: 5
+  outer_n_repeats: 5
+  inner_n_splits: 3          # inner CV for Optuna tuning and for the threshold predictions
+  # Stratification key = anemia class x CED status. A missing component is its own
+  # category (NoHb in the CED model, NoMUAC in the Hb model). Groups under min_cell_count
+  # are merged before any split. See src/splits.py build_strat_key.
+  min_cell_count: 5
+  group_column: district     # GroupKFold sensitivity analysis (leave one subdistrict out)
+
+feature_selection:
+  k: 7
+  forced_include: [prepreg_weight, anc_visits, hfias_score]
+  rf_n_estimators: 300
+  dashboard_min_fold_share: 0.5   # dashboard list: selected in at least half of the 25 outer folds
+  discrete_features: [anc_visits, n_children, n_under5, egg_freq, food_taboo, education_mother, income]
+
+preprocessing:
+  # Count and ordinal columns that must stay whole numbers after resampling (exploratory variants only).
+  integer_columns: [age, anc_visits, n_children, n_under5, egg_freq, education_mother, income]
+
+tuning:
+  n_trials: 30               # identical for every tuned model. Dummy models are not tuned.
+  sampler: tpe
+  # Tuning objective (not specified in the proposal, see CHANGELOG 2026-10-17).
+  objective:
+    regression: mae               # minimised (Hb)
+    classification: roc_auc       # maximised (CED, direct anemia classifier)
+  search_spaces:
+    xgb_regressor: &xgb_space
+      n_estimators: {type: int, low: 50, high: 500, step: 25}
+      max_depth: {type: int, low: 2, high: 5}
+      learning_rate: {type: float, low: 0.01, high: 0.2, log: true}
+      subsample: {type: float, low: 0.6, high: 1.0}
+      colsample_bytree: {type: float, low: 0.5, high: 1.0}
+      min_child_weight: {type: float, low: 1.0, high: 10.0, log: true}
+    xgb_classifier: *xgb_space
+    ridge:
+      alpha: {type: float, low: 0.001, high: 100.0, log: true}
+    logistic_regression:
+      C: {type: float, low: 0.001, high: 100.0, log: true}
+    decision_tree:
+      max_depth: {type: int, low: 2, high: 6}
+      min_samples_leaf: {type: int, low: 5, high: 40}
+    random_forest:
+      max_depth: {type: int, low: 2, high: 8}
+      min_samples_leaf: {type: int, low: 3, high: 30}
+      max_features: {type: float, low: 0.3, high: 1.0}
+
+thresholds:
+  hb_flag_share_of_cases: 0.70   # cut-off on predicted Hb that flags 70 percent of true cases in inner-fold predictions
+  ced_rule: youden
+  ced_extra_sensitivity_targets: [0.80, 0.90]
+
+models:
+  xgb_n_jobs: 1              # single thread inside each fit keeps results reproducible
+  rf_n_jobs: 1               # parallelism comes from outer folds instead
+
+resampling:                  # exploratory comparisons only. Main models use no resampling.
+  smotenc:
+    k_neighbors: 5
+    sampling_strategy: auto
+    categorical_columns: [food_taboo]
+  smogn:
+    backend: native
+    k_neighbors: 5
+    relevance_method: manual
+    control_points: [[10.0, 1.0], [11.0, 0.0]]
+    auto_extreme_type: low
+    relevance_threshold: 0.5
+    perturbation: 0.02
+    undersample_normal: true
+    categorical_columns: [food_taboo]
+
+intervals:                   # exploratory split-conformal intervals for Hb
+  nominal: 0.90
+
+evaluation:
+  anemia_threshold: 11.0
+  n_bootstrap: 2000
+  ci_level: 0.95
+  # A headline result above these values is treated as possible leakage and investigated.
+  too_good: {ced_auc: 0.90, hb_r2: 0.50}
+
+canaries:
+  permutation_seed: 7
+  n_trials: 5                # reduced tuning budget
+  n_repeats: 1               # one repetition of the outer 5-fold CV
+  max_auc: 0.60              # an AUC above this on permuted labels indicates leakage
+  max_hb_r2: 0.05            # an Hb R2 above this on permuted labels indicates leakage
+
+runtime:
+  n_jobs: 8                  # outer folds run in parallel. Results do not depend on this value.

@@ -1,0 +1,59 @@
+# Educational messages shown in the dashboard advice panel.
+# Editable by a midwife or nutritionist without touching code.
+#
+# STATUS: DRAFT. Proposal 3.6 requires that educational advice is written from guidelines and
+# reviewed by a health worker before use. Until a reviewer fills in reviewed_by and
+# reviewed_on, the dashboard shows a banner that these messages are a draft.
+review:
+  status: draft
+  reviewed_by: null
+  reviewed_on: null
+  banner: "Pesan edukasi ini masih draf dan belum ditinjau oleh bidan atau ahli gizi."
+
+# Always shown.
+disclaimer: >-
+  Hasil ini adalah perkiraan untuk membantu skrining awal, bukan diagnosis. Hasil ini tidak
+  menggantikan pengukuran LILA atau pemeriksaan Hb. Keputusan klinis tetap berada pada tenaga kesehatan.
+
+# By predicted CED status (probability at or above the screening threshold = above).
+ced_status:
+  above: >-
+    Perkiraan risiko KEK di atas ambang skrining. Mohon ukur LILA ibu dan rujuk ke bidan atau
+    puskesmas sesuai prosedur setempat.
+  below: >-
+    Perkiraan risiko KEK di bawah ambang skrining. Tetap lakukan pengukuran LILA rutin pada
+    kunjungan pemeriksaan kehamilan.
+
+# Always shown for Hb, because the Hb model cannot reliably detect anemia.
+hb_always: >-
+  Perkiraan Hb dari kuesioner tidak dapat menggantikan pemeriksaan darah. Anjurkan ibu memeriksa
+  Hb di fasilitas kesehatan bila belum pernah atau bila petugas menganjurkan pemeriksaan ulang.
+
+# Messages tied to the CED model's dominant factors. A message is shown only when that factor
+# pushed the CED estimate UP for this woman (positive SHAP value), at most max_driver_messages,
+# in order of contribution. The wording describes the model's estimate, never a cause.
+max_driver_messages: 3
+drivers:
+  prepreg_weight: >-
+    Berat badan sebelum hamil termasuk faktor yang menaikkan perkiraan risiko. Diskusikan dengan
+    bidan atau ahli gizi tentang kecukupan makan dan pemantauan berat badan selama hamil.
+  anc_visits: >-
+    Jumlah kunjungan pemeriksaan kehamilan termasuk faktor yang menaikkan perkiraan risiko.
+    Ingatkan ibu untuk mengikuti jadwal pemeriksaan kehamilan yang dianjurkan petugas kesehatan.
+  hfias_score: >-
+    Kerawanan pangan rumah tangga termasuk faktor yang menaikkan perkiraan risiko. Informasikan
+    program bantuan pangan atau dukungan gizi yang tersedia di desa atau puskesmas.
+  egg_freq: >-
+    Frekuensi makan telur termasuk faktor yang menaikkan perkiraan risiko. Berikan edukasi tentang
+    sumber protein hewani yang terjangkau di daerah setempat.
+  age: >-
+    Umur ibu termasuk faktor yang menaikkan perkiraan risiko. Pastikan ibu mendapat pemantauan
+    status gizi sesuai anjuran petugas.
+  n_children: >-
+    Jumlah anak termasuk faktor yang menaikkan perkiraan risiko. Diskusikan dukungan keluarga
+    agar kebutuhan makan ibu selama hamil tercukupi.
+  height: >-
+    Tinggi badan termasuk faktor yang menaikkan perkiraan risiko. Pastikan pengukuran LILA dan
+    berat badan dilakukan pada kunjungan berikutnya.
+  # education_mother has no message on purpose: the model links higher education with a higher
+  # CED estimate in this dataset, which is an association with no sensible counseling action.

@@ -1,0 +1,53 @@
+# Phase D settings: calibration, intervals, SHAP and the dashboard narrative.
+# Kept separate from config.yaml so the checkpoint hash of the locked main run does not change.
+# Written on 2026-10-21 before any Phase D result was computed.
+
+label: "exploratory, pre-specified (proposal 2.8 and 3.6)"
+
+# Proposal 3.6: the Hb explanation is shown in the dashboard only if the Hb model improves on
+# the mean-only baseline by the margin in Table 1.1 (hypothesis S1). S1 was not supported
+# (results/tables/d01_hypothesis_verdicts.csv), so the Hb explanation is hidden and the Hb
+# estimate is labelled indicative (proposal 3.7). SHAP for Hb is still computed and reported
+# for the thesis, clearly marked as describing a model that learned little.
+hb_explanation_enabled: false
+hb_explanation_rule_source: "S1_hb_vs_mean verdict in results/tables/d01_hypothesis_verdicts.csv"
+# Researcher decision 2026-10-21 (option C): the Hb estimate is shown only as an indicative
+# point estimate, without the conformal range, because the 90 percent interval covered only
+# 69 percent of anemic women (results/exploratory/x16).
+hb_show_range: false
+
+# Decision rule for the dashboard CED probability, fixed before calibration results exist:
+# apply Platt recalibration only if the cross-fitted Brier score improvement over the
+# uncalibrated probabilities has a 95 percent CI entirely above 0. Otherwise keep the
+# uncalibrated probabilities. Isotonic recalibration is reported but not used in the dashboard,
+# because with about 330 training records per fold its step function is unstable.
+calibration:
+  methods: [platt, isotonic]
+  dashboard_rule: "platt only if Brier improvement 95% CI lower bound > 0"
+  n_bins: 10
+  bin_strategy: quantile
+
+shap:
+  top_k_narrative: 3          # contributions named in the narrative
+  top_k_stability: 3          # per-woman top-k set compared across repetitions
+
+feature_labels_id:
+  age: "umur ibu"
+  n_children: "jumlah anak"
+  n_under5: "jumlah balita"
+  prepreg_weight: "berat badan sebelum hamil"
+  height: "tinggi badan"
+  anc_visits: "jumlah kunjungan ANC"
+  hfias_score: "skor kerawanan pangan rumah tangga (HFIAS)"
+  education_mother: "pendidikan ibu"
+  income: "pendapatan rumah tangga"
+  egg_freq: "frekuensi makan telur"
+  food_taboo: "pantangan makanan selama hamil"
+
+feature_units_id:
+  age: "tahun"
+  prepreg_weight: "kg"
+  height: "cm"
+  anc_visits: "kali"
+  n_children: "anak"
+  n_under5: "anak"

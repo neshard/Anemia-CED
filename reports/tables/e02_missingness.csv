@@ -1,0 +1,12 @@
+column,n_missing,pct_missing
+age,1,0.3
+anc_visits,0,0.0
+egg_freq,0,0.0
+food_taboo,0,0.0
+height,2,0.6
+hfias_score,0,0.0
+n_children,0,0.0
+n_under5,0,0.0
+prepreg_weight,0,0.0
+hb_target,18,5.39
+ced,6,1.8

@@ -1,0 +1,3 @@
+model,metric,point,ci_low,ci_high,ci_level,point_min,point_max,n_repetitions,note
+xgboost,interval_coverage,0.9005050505050505,0.8696969696969697,0.9292929292929293,0.95,0.8838383838383839,0.9065656565656566,5,"split-conformal, 90 percent nominal, calibrated on inner-fold predictions. May be slightly conservative."
+xgboost,interval_mean_width,4.202165124494949,4.187562118794192,4.217271816748737,0.95,4.129473819444445,4.267174327020202,5,"split-conformal, 90 percent nominal, calibrated on inner-fold predictions. May be slightly conservative."

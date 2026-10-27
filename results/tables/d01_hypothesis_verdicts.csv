@@ -1,0 +1,5 @@
+hypothesis,role,verdict,ci_level_used,holm_order,hypothesis_p_value,statement,success_criterion
+P1_anemia_screening,primary,not_supported,0.975,1.0,0.9484257871064468,Anemia screening from predicted hemoglobin reaches the feasibility criteria on out-of-fold predictions.,"Sensitivity of at least 0.70 and specificity of at least 0.40 on out-of-fold predictions, with the lower bound of the AUC confidence interval above 0.50."
+P2_ced_classification,primary,not_supported,0.975,2.0,0.9995002498750625,The CED model reaches the AUC criterion and beats Logistic Regression.,"AUC of at least 0.70 with a confidence interval lower bound of at least 0.50, and at least 0.03 AUC above Logistic Regression."
+S1_hb_vs_mean,secondary,not_supported,0.95,,1.0,Hemoglobin error against a mean-only baseline.,MAE lower by at least 0.10 g/dL.
+S2_hb_vs_ridge,secondary,not_supported,0.95,,0.9982008995502248,Hemoglobin error against Ridge regression.,MAE lower by at least 0.05 g/dL.

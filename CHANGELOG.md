@@ -119,3 +119,15 @@ Reason: the title is now "Evaluating XGBoost with SHAP ...". The supervisor aske
 - **Selection (m10, artifacts/model_selection.json)**: Hb: provisional winner GBM (MAE 0.993), equivalence group XGBoost, GBM, LightGBM, CatBoost, so XGBoost is selected by step 4. CED: XGBoost has the best eligible AUC-ROC (0.773) and is selected. The dashboard keeps XGBoost for both targets, so 07 needs no rerun for a winner.
 - **Hb explanation gate (m11)**: XGBoost MAE reduction versus mean-only 0.002 g/dL (95 percent CI -0.022 to 0.026), outcome fail, verdict not_supported, identical to S1. The Hb explanation stays hidden and Hb stays indicative.
 - **Calibration (10)**: recomputed for the selected CED model (XGBoost) with the explain.yaml rule. Brier difference uncalibrated minus Platt -0.0016 (CI -0.0036 to 0.0004), so the dashboard keeps the uncalibrated probability, unchanged.
+
+## 2026-10-28 (DEVIATION: selection rule version 2, set after the results were known)
+
+- **Researcher instruction**: XGBoost must not be the reference. If another boosting model performs better it goes to the dashboard. Baselines (and Decision Tree, Random Forest) never do.
+- **Change**: config/model_selection.yaml version 2, locked 2026-10-28 in commit 4ea49bd. Only step 4 changed: choice best_point_estimate, preferred null. The eligible boosting model with the best point estimate (MAE for Hb, AUC-ROC for CED) is selected. Eligibility, candidates, metrics, bootstrap seeds, additivity tolerance and the Hb gate are unchanged. Version 1 (commit 0cc4098) is still applied side by side in table m10 (column selected_by_version1_rule).
+- **This is post hoc**: every comparison result (m01 to m11) was known when version 2 was written, and it was known that version 2 would select GBM for Hb. The selection is therefore data-driven and its performance optimistic. It is reported as such.
+- **Outcome**: Hb: GBM (MAE 0.993 versus XGBoost 0.998, difference 0.006 g/dL, 95 percent paired CI containing 0, so not statistically established; version 1 selected XGBoost). CED: XGBoost (AUC-ROC 0.773, best eligible; same as version 1).
+- **Hb gate for GBM (m11)**: MAE reduction versus mean-only 0.008 g/dL (95 percent CI -0.020 to 0.035), fail, not_supported. The Hb output stays indicative without explanation. GBM interval coverage among anemic women 0.70 (x16), so hb_show_range stays false.
+- **Final models (09)**: Hb GBM tuned on all 396 records with the same procedure (inner 3-fold, 30 trials), same seven dashboard features, SHAP additivity 1e-14. CED unchanged. 10 and 11 rerun for the selected models; the CED calibration decision is unchanged (uncalibrated).
+- **07** is not run for GBM (researcher decision of 2026-10-27), recorded as a limitation: the sensitivity analyses cover XGBoost and the baselines only.
+- Hypotheses P1, P2, S1 and S2 and their verdicts (d01, d02) are unchanged: they concern XGBoost.
+- 297 tests pass. The dashboard loads GBM for Hb and XGBoost for CED from artifacts/final_models.json.

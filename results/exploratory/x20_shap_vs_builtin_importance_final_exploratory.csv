@@ -2,6 +2,4 @@ label,target,model,importance,n_features,spearman_vs_mean_abs_shap
 "exploratory, pre-specified (proposal 2.8 and 3.6)",ced,xgboost,gain,8,0.9762
 "exploratory, pre-specified (proposal 2.8 and 3.6)",ced,xgboost,cover,8,0.619
 "exploratory, pre-specified (proposal 2.8 and 3.6)",ced,xgboost,weight,8,0.9222
-"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,xgboost,gain,7,0.7143
-"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,xgboost,cover,7,0.75
-"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,xgboost,weight,7,0.6071
+"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,gbm,builtin,7,0.5714

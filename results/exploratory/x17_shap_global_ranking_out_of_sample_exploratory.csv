@@ -1,15 +1,15 @@
 label,target,model,rank,feature,label_id,mean_abs_shap,min_over_repetitions,max_over_repetitions,note
-"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,xgboost,1,prepreg_weight,berat badan sebelum hamil,0.0875,0.0729,0.1039,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
-"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,xgboost,2,age,umur ibu,0.0817,0.0636,0.1049,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
-"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,xgboost,3,anc_visits,jumlah kunjungan ANC,0.0742,0.0622,0.0924,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
-"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,xgboost,4,education_mother,pendidikan ibu,0.0481,0.0321,0.0623,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
-"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,xgboost,5,n_children,jumlah anak,0.0414,0.0171,0.0658,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
-"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,xgboost,6,height,tinggi badan,0.0334,0.0294,0.0444,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
-"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,xgboost,7,hfias_score,skor kerawanan pangan rumah tangga (HFIAS),0.0213,0.0175,0.0269,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
-"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,xgboost,8,egg_freq,frekuensi makan telur,0.0116,0.0041,0.02,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
-"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,xgboost,9,food_taboo,pantangan makanan selama hamil,0.0057,0.0,0.0163,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
-"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,xgboost,10,income,pendapatan rumah tangga,0.0034,0.0,0.0115,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
-"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,xgboost,11,n_under5,jumlah balita,0.0022,0.0,0.0042,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
+"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,gbm,1,prepreg_weight,berat badan sebelum hamil,0.1211,0.0971,0.1327,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
+"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,gbm,2,age,umur ibu,0.1076,0.0829,0.1175,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
+"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,gbm,3,anc_visits,jumlah kunjungan ANC,0.0914,0.0784,0.1004,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
+"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,gbm,4,n_children,jumlah anak,0.0587,0.0337,0.0902,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
+"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,gbm,5,education_mother,pendidikan ibu,0.0515,0.0355,0.0594,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
+"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,gbm,6,height,tinggi badan,0.0444,0.0302,0.0578,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
+"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,gbm,7,hfias_score,skor kerawanan pangan rumah tangga (HFIAS),0.0186,0.0127,0.0265,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
+"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,gbm,8,egg_freq,frekuensi makan telur,0.0144,0.003,0.0218,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
+"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,gbm,9,n_under5,jumlah balita,0.0065,0.0,0.0169,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
+"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,gbm,10,income,pendapatan rumah tangga,0.0037,0.0,0.0102,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
+"exploratory, pre-specified (proposal 2.8 and 3.6)",hb,gbm,11,food_taboo,pantangan makanan selama hamil,0.0031,0.0,0.0155,Hb model did not beat the mean-only baseline. Not shown in the dashboard.
 "exploratory, pre-specified (proposal 2.8 and 3.6)",ced,xgboost,1,prepreg_weight,berat badan sebelum hamil,0.8375,0.7257,0.9364,out-of-sample (outer test folds)
 "exploratory, pre-specified (proposal 2.8 and 3.6)",ced,xgboost,2,anc_visits,jumlah kunjungan ANC,0.3061,0.2526,0.3868,out-of-sample (outer test folds)
 "exploratory, pre-specified (proposal 2.8 and 3.6)",ced,xgboost,3,age,umur ibu,0.1631,0.1272,0.215,out-of-sample (outer test folds)

@@ -1,5 +1,5 @@
 label,group,n,coverage_mean,coverage_min,coverage_max,mean_width_g_dl,nominal
-"exploratory, pre-specified (proposal 2.8 and 3.6)",all,396,0.9005,0.8838,0.9066,4.2022,0.9
-"exploratory, pre-specified (proposal 2.8 and 3.6)",anemic (Hb < 11),85,0.6894,0.6588,0.7059,4.2029,0.9
-"exploratory, pre-specified (proposal 2.8 and 3.6)",not anemic,311,0.9582,0.9453,0.9614,4.202,0.9
-"exploratory, pre-specified (proposal 2.8 and 3.6)",final model (dashboard),396,,,,4.244,0.9
+"exploratory, pre-specified (proposal 2.8 and 3.6)",all,396,0.9025,0.8939,0.9091,4.1542,0.9
+"exploratory, pre-specified (proposal 2.8 and 3.6)",anemic (Hb < 11),85,0.6965,0.6706,0.7176,4.1543,0.9
+"exploratory, pre-specified (proposal 2.8 and 3.6)",not anemic,311,0.9588,0.955,0.9614,4.1542,0.9
+"exploratory, pre-specified (proposal 2.8 and 3.6)",final model (dashboard),396,,,,4.0051,0.9

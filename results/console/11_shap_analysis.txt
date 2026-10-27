@@ -1,13 +1,13 @@
-2026-10-28 00:25:49,145 INFO anemia_ced: Library versions written to D:\ANEMIA-CED\anemia_ced_screening\reports\library_versions.json
-2026-10-28 00:25:49,154 INFO anemia_ced: seed=42
-2026-10-28 00:25:49,155 INFO anemia_ced: outer CV=5 folds x 5 repeats (stratified on anemia class x CED)
-2026-10-28 00:25:49,155 INFO anemia_ced: inner CV=3 folds (tuning and thresholds), min stratum=5
-2026-10-28 00:25:49,155 INFO anemia_ced: tuning=Optuna tpe, 30 trials for every tuned model, objective={'regression': 'mae', 'classification': 'roc_auc'}
-2026-10-28 00:25:49,155 INFO anemia_ced: features=per fold, forced ['prepreg_weight', 'anc_visits', 'hfias_score'] plus best of the rest, k=7, RF 300 trees
-2026-10-28 00:25:49,155 INFO anemia_ced: thresholds: Hb flags 70% of true cases, CED youden plus sensitivity [0.8, 0.9]
-2026-10-28 00:25:49,155 INFO anemia_ced: bootstrap=2000 resamples per repetition, CI=0.95
-2026-10-28 00:25:49,155 INFO anemia_ced: versions: python 3.11.6, numpy 1.26.4, pandas 2.2.3, scipy 1.13.1, sklearn 1.5.2, imblearn 0.12.4, xgboost 2.1.3, lightgbm 4.5.0, catboost 1.2.7, shap 0.46.0, smogn unknown, optuna 4.1.0, statsmodels 0.14.4, matplotlib 3.9.2, yaml 6.0.2, joblib 1.4.2, streamlit 1.40.1
-2026-10-28 00:25:49,221 INFO src.cleaning: Cleaning done: 418 of 420 rows usable
+2026-10-28 01:02:51,064 INFO anemia_ced: Library versions written to D:\ANEMIA-CED\anemia_ced_screening\reports\library_versions.json
+2026-10-28 01:02:51,064 INFO anemia_ced: seed=42
+2026-10-28 01:02:51,064 INFO anemia_ced: outer CV=5 folds x 5 repeats (stratified on anemia class x CED)
+2026-10-28 01:02:51,064 INFO anemia_ced: inner CV=3 folds (tuning and thresholds), min stratum=5
+2026-10-28 01:02:51,064 INFO anemia_ced: tuning=Optuna tpe, 30 trials for every tuned model, objective={'regression': 'mae', 'classification': 'roc_auc'}
+2026-10-28 01:02:51,064 INFO anemia_ced: features=per fold, forced ['prepreg_weight', 'anc_visits', 'hfias_score'] plus best of the rest, k=7, RF 300 trees
+2026-10-28 01:02:51,064 INFO anemia_ced: thresholds: Hb flags 70% of true cases, CED youden plus sensitivity [0.8, 0.9]
+2026-10-28 01:02:51,083 INFO anemia_ced: bootstrap=2000 resamples per repetition, CI=0.95
+2026-10-28 01:02:51,083 INFO anemia_ced: versions: python 3.11.6, numpy 1.26.4, pandas 2.2.3, scipy 1.13.1, sklearn 1.5.2, imblearn 0.12.4, xgboost 2.1.3, lightgbm 4.5.0, catboost 1.2.7, shap 0.46.0, smogn unknown, optuna 4.1.0, statsmodels 0.14.4, matplotlib 3.9.2, yaml 6.0.2, joblib 1.4.2, streamlit 1.40.1
+2026-10-28 01:02:51,149 INFO src.cleaning: Cleaning done: 418 of 420 rows usable
 D:\ANEMIA-CED\anemia_ced_screening\.venv\Lib\site-packages\joblib\externals\loky\backend\context.py:136: UserWarning: Could not find the number of physical cores for the following reason:
 [WinError 2] The system cannot find the file specified
 Returning the number of logical cores instead. You can silence this warning by setting LOKY_MAX_CPU_COUNT to the number of cores you want to use.
@@ -33,20 +33,20 @@ Returning the number of logical cores instead. You can silence this warning by s
   bootstrap=2000 resamples per repetition, CI=0.95
   versions: python 3.11.6, numpy 1.26.4, pandas 2.2.3, scipy 1.13.1, sklearn 1.5.2, imblearn 0.12.4, xgboost 2.1.3, lightgbm 4.5.0, catboost 1.2.7, shap 0.46.0, smogn unknown, optuna 4.1.0, statsmodels 0.14.4, matplotlib 3.9.2, yaml 6.0.2, joblib 1.4.2, streamlit 1.40.1
 target   model  fold_models  max_abs_prediction_difference  selected_features_identical  max_shap_additivity_error
-    hb xgboost           25                   4.766846e-07                         True                   0.000014
-   ced xgboost           25                   2.979889e-08                         True                   0.000003
+    hb     gbm           25                   1.776357e-15                         True               3.019807e-14
+   ced xgboost           25                   2.979889e-08                         True               3.337860e-06
 target  rank          feature  mean_abs_shap  min_over_repetitions  max_over_repetitions
-    hb     1   prepreg_weight         0.0875                0.0729                0.1039
-    hb     2              age         0.0817                0.0636                0.1049
-    hb     3       anc_visits         0.0742                0.0622                0.0924
-    hb     4 education_mother         0.0481                0.0321                0.0623
-    hb     5       n_children         0.0414                0.0171                0.0658
-    hb     6           height         0.0334                0.0294                0.0444
-    hb     7      hfias_score         0.0213                0.0175                0.0269
-    hb     8         egg_freq         0.0116                0.0041                0.0200
-    hb     9       food_taboo         0.0057                0.0000                0.0163
-    hb    10           income         0.0034                0.0000                0.0115
-    hb    11         n_under5         0.0022                0.0000                0.0042
+    hb     1   prepreg_weight         0.1211                0.0971                0.1327
+    hb     2              age         0.1076                0.0829                0.1175
+    hb     3       anc_visits         0.0914                0.0784                0.1004
+    hb     4       n_children         0.0587                0.0337                0.0902
+    hb     5 education_mother         0.0515                0.0355                0.0594
+    hb     6           height         0.0444                0.0302                0.0578
+    hb     7      hfias_score         0.0186                0.0127                0.0265
+    hb     8         egg_freq         0.0144                0.0030                0.0218
+    hb     9         n_under5         0.0065                0.0000                0.0169
+    hb    10           income         0.0037                0.0000                0.0102
+    hb    11       food_taboo         0.0031                0.0000                0.0155
    ced     1   prepreg_weight         0.8375                0.7257                0.9364
    ced     2       anc_visits         0.3061                0.2526                0.3868
    ced     3              age         0.1631                0.1272                0.2150
@@ -59,25 +59,23 @@ target  rank          feature  mean_abs_shap  min_over_repetitions  max_over_rep
    ced    10           income         0.0000                0.0000                0.0000
    ced    11       food_taboo         0.0000                0.0000                0.0000
 target   model  fold_models  mean_pairwise_spearman_mean_abs_shap  min_pairwise_spearman  share_same_top3_set_across_repetitions  share_same_top1_across_repetitions  women
-    hb xgboost           25                                 0.650                  0.138                                   0.108                               0.383    396
+    hb     gbm           25                                 0.656                  0.176                                   0.130                               0.431    396
    ced xgboost           25                                 0.834                  0.507                                   0.429                               0.919    410
 target   model importance  n_features  spearman_vs_mean_abs_shap
    ced xgboost       gain           8                      0.976
    ced xgboost      cover           8                      0.619
    ced xgboost     weight           8                      0.922
-    hb xgboost       gain           7                      0.714
-    hb xgboost      cover           7                      0.750
-    hb xgboost     weight           7                      0.607
+    hb     gbm    builtin           7                      0.571
 target   model  n_records                                                                              features  base_value  max_additivity_error
-   ced xgboost        410 anc_visits|hfias_score|prepreg_weight|age|height|n_children|education_mother|egg_freq   -0.991946              0.000003
-    hb xgboost        396          age|anc_visits|hfias_score|prepreg_weight|height|n_children|education_mother   11.432139              0.000012
+   ced xgboost        410 anc_visits|hfias_score|prepreg_weight|age|height|n_children|education_mother|egg_freq   -0.991946          2.622604e-06
+    hb     gbm        396          age|anc_visits|hfias_score|prepreg_weight|height|n_children|education_mother   11.423231          1.065814e-14
 [exploratory, pre-specified (proposal 2.8 and 3.6)] Synthetic median profile, not a real woman.
 
 CED:
 Perkiraan peluang risiko KEK untuk ibu ini adalah 32%. Angka ini di atas ambang skrining 29%, sehingga ibu ini dianjurkan untuk diukur LILA-nya oleh petugas. Faktor yang paling menaikkan perkiraan model: jumlah kunjungan ANC (3 kali), pendidikan ibu (SMA/SMK). Faktor yang paling menurunkan perkiraan model: berat badan sebelum hamil (53 kg). Perkiraan dibuat dengan model XGBoost. Penjelasan ini menunjukkan bagaimana model sampai pada perkiraannya, bukan penyebab kondisi ibu. Faktor yang disebut tidak berarti menyebabkan risiko tersebut. Hasil ini adalah perkiraan untuk membantu skrining awal, bukan diagnosis. Hasil ini tidak menggantikan pengukuran LILA atau pemeriksaan Hb di fasilitas kesehatan.
 
 Hb:
-Perkiraan Hb (indikatif): 11,6 g/dL. Perkiraan ini hanya indikatif. Dalam evaluasi, model Hb tidak terbukti lebih akurat daripada menebak nilai rata-rata dan tidak dapat diandalkan untuk mendeteksi anemia, sehingga penjelasan faktor tidak ditampilkan. Perkiraan dibuat dengan model XGBoost. Hasil ini adalah perkiraan untuk membantu skrining awal, bukan diagnosis. Hasil ini tidak menggantikan pengukuran LILA atau pemeriksaan Hb di fasilitas kesehatan.
+Perkiraan Hb (indikatif): 11,9 g/dL. Perkiraan ini hanya indikatif. Dalam evaluasi, model Hb tidak terbukti lebih akurat daripada menebak nilai rata-rata dan tidak dapat diandalkan untuk mendeteksi anemia, sehingga penjelasan faktor tidak ditampilkan. Perkiraan dibuat dengan model Gradient Boosting Machine. Hasil ini adalah perkiraan untuk membantu skrining awal, bukan diagnosis. Hasil ini tidak menggantikan pengukuran LILA atau pemeriksaan Hb di fasilitas kesehatan.
 
 Written:
   results\exploratory\x17_shap_global_ranking_out_of_sample_exploratory.csv

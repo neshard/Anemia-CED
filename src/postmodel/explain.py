@@ -5,16 +5,20 @@ not show what causes anemia or CED, and a model that learned little gives
 explanations that carry little meaning (proposal 3.6). The narrative states
 both points explicitly and never uses causal wording.
 
-TreeExplainer runs on the fitted XGBoost model inside the pipeline. The matrix
-it explains is produced by the same fitted preprocessing steps (imputation,
-selection, encoding) as at prediction time, with the resampler excluded
-because it never runs at prediction time.
+TreeExplainer runs on the fitted tree model inside the pipeline (XGBoost, GBM,
+LightGBM or CatBoost). The matrix it explains is produced by the same fitted
+preprocessing steps (imputation, selection, encoding) as at prediction time,
+with the resampler excluded because it never runs at prediction time.
+There is no fallback to KernelExplainer: a model TreeExplainer cannot handle
+(AdaBoost in shap 0.46) raises ``ExplainerNotSupportedError``.
 """
 
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from typing import Any
+
+import warnings
 
 import matplotlib
 
@@ -36,21 +40,48 @@ DISCLAIMER = (
 )
 
 
+ALGORITHM_LABELS: dict[str, str] = {
+    "xgboost": "XGBoost", "gbm": "Gradient Boosting Machine", "lightgbm": "LightGBM", "catboost": "CatBoost",
+    "adaboost": "AdaBoost",
+}
+
+
+class ExplainerNotSupportedError(TypeError):
+    """Raised when shap.TreeExplainer cannot explain the model. No other explainer is substituted."""
+
+
 def model_matrix(pipe: Any, X: pd.DataFrame) -> pd.DataFrame:
     """The exact matrix the fitted model receives for ``X``."""
     return preprocessing_only(pipe).transform(X)
 
 
 def tree_explainer(pipe: Any) -> shap.TreeExplainer:
-    return shap.TreeExplainer(pipe.named_steps["model"])
+    model = pipe.named_steps["model"]
+    try:
+        return shap.TreeExplainer(model)
+    except Exception as exc:  # shap raises InvalidModelError (an Exception subclass) for unsupported models
+        raise ExplainerNotSupportedError(f"shap.TreeExplainer does not support {type(model).__name__}: {exc}") from exc
+
+
+def explainer_supported(pipe: Any) -> bool:
+    try:
+        tree_explainer(pipe)
+    except ExplainerNotSupportedError:
+        return False
+    return True
 
 
 def shap_table(pipe: Any, X: pd.DataFrame, explainer: shap.TreeExplainer | None = None) -> tuple[pd.DataFrame, float, pd.DataFrame]:
     """SHAP values (raw model output: g/dL for Hb, log-odds for CED), the base value and the explained matrix."""
     explainer = explainer or tree_explainer(pipe)
     Xt = model_matrix(pipe, X)
-    values = np.asarray(explainer.shap_values(Xt))
-    if values.ndim == 3:  # some shap versions return one array per class
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", message="LightGBM binary classifier with TreeExplainer")
+        raw = explainer.shap_values(Xt)
+    if isinstance(raw, list):  # one array per class: keep the positive class
+        raw = raw[-1]
+    values = np.asarray(raw)
+    if values.ndim == 3:  # (rows, features, classes) in some shap versions
         values = values[..., -1]
     base = float(np.ravel(explainer.expected_value)[-1])
     return pd.DataFrame(values, columns=Xt.columns, index=X.index), base, Xt
@@ -60,23 +91,49 @@ def model_margin(pipe: Any, X: pd.DataFrame) -> np.ndarray:
     """Raw model output that SHAP values add up to (prediction for Hb, log-odds for CED)."""
     model = pipe.named_steps["model"]
     Xt = model_matrix(pipe, X)
-    if hasattr(model, "predict_proba"):
-        return np.asarray(model.predict(Xt, output_margin=True), dtype=float)
-    return np.asarray(model.predict(Xt), dtype=float)
+    if not hasattr(model, "predict_proba"):
+        return np.asarray(model.predict(Xt), dtype=float)
+    name = type(model).__name__
+    if name.startswith("XGB"):
+        out = model.predict(Xt, output_margin=True)
+    elif name.startswith("LGBM"):
+        out = model.predict(Xt, raw_score=True)
+    elif name.startswith("CatBoost"):
+        out = model.predict(Xt, prediction_type="RawFormulaVal")
+    elif hasattr(model, "decision_function"):  # scikit-learn GradientBoostingClassifier
+        out = model.decision_function(Xt)
+    else:
+        raise ExplainerNotSupportedError(f"No raw margin for {name}")
+    return np.asarray(out, dtype=float)
 
 
-def additivity_error(pipe: Any, X: pd.DataFrame) -> float:
+def additivity_error(pipe: Any, X: pd.DataFrame, explainer: shap.TreeExplainer | None = None) -> float:
     """Largest absolute gap between SHAP sum plus base value and the model output."""
-    values, base, _ = shap_table(pipe, X)
+    values, base, _ = shap_table(pipe, X, explainer)
     return float(np.max(np.abs(values.sum(axis=1).to_numpy() + base - model_margin(pipe, X))))
 
 
 def builtin_importance(pipe: Any) -> pd.DataFrame:
-    """XGBoost gain, cover and weight importance for the features the model uses."""
-    booster = pipe.named_steps["model"].get_booster()
-    names = list(pipe.named_steps["model"].feature_names_in_)
-    rows = {kind: booster.get_score(importance_type=kind) for kind in ("gain", "cover", "weight")}
-    return pd.DataFrame({kind: [rows[kind].get(n, 0.0) for n in names] for kind in rows}, index=names)
+    """Built-in importance for the features the model uses.
+
+    XGBoost: gain, cover and weight. Other libraries: their ``feature_importances_``
+    (impurity decrease for GBM, split counts for LightGBM, PredictionValuesChange for CatBoost).
+    """
+    model = pipe.named_steps["model"]
+    names = list(model_matrix_columns(pipe))
+    if type(model).__name__.startswith("XGB"):
+        booster = model.get_booster()
+        rows = {kind: booster.get_score(importance_type=kind) for kind in ("gain", "cover", "weight")}
+        return pd.DataFrame({kind: [rows[kind].get(n, 0.0) for n in names] for kind in rows}, index=names)
+    return pd.DataFrame({"builtin": np.asarray(model.feature_importances_, dtype=float)}, index=names)
+
+
+def model_matrix_columns(pipe: Any) -> list[str]:
+    """Columns of the matrix the fitted model was trained on."""
+    model = pipe.named_steps["model"]
+    if hasattr(model, "feature_names_in_"):
+        return list(model.feature_names_in_)
+    return list(model.feature_names_)  # CatBoost
 
 
 def _decode(feature: str, value: float, config: Mapping[str, Any]) -> str:
@@ -121,7 +178,13 @@ def _fmt_num(x: float, digits: int = 1) -> str:
     return f"{x:.{digits}f}".replace(".", ",")
 
 
-def narrative_ced(probability: float, threshold: float, contributions: Sequence[Mapping[str, Any]]) -> str:
+def model_sentence(algorithm: str | None) -> str:
+    """Which algorithm produced the estimate, shown with every narrative."""
+    return f"Perkiraan dibuat dengan model {ALGORITHM_LABELS.get(algorithm, algorithm)}." if algorithm else ""
+
+
+def narrative_ced(probability: float, threshold: float, contributions: Sequence[Mapping[str, Any]],
+                  algorithm: str | None = None) -> str:
     """Plain Indonesian narrative for the CED risk estimate. No causal wording."""
     if probability >= threshold:
         status = (f"Angka ini di atas ambang skrining {_fmt_pct(threshold)}, sehingga ibu ini dianjurkan "
@@ -137,11 +200,12 @@ def narrative_ced(probability: float, threshold: float, contributions: Sequence[
     if down:
         parts.append("Faktor yang paling menurunkan perkiraan model: "
                      + ", ".join(f"{c['label']} ({c['value_text']})" for c in down) + ".")
-    parts += [NON_CAUSAL_SENTENCE, DISCLAIMER]
+    parts += [p for p in (model_sentence(algorithm),) if p] + [NON_CAUSAL_SENTENCE, DISCLAIMER]
     return " ".join(parts)
 
 
-def narrative_hb(prediction: float, half_width: float, explanation_enabled: bool, show_range: bool = True) -> str:
+def narrative_hb(prediction: float, half_width: float, explanation_enabled: bool, show_range: bool = True,
+                 algorithm: str | None = None) -> str:
     """Hb narrative. When the Hb model did not beat the mean-only baseline, no factors are named.
 
     With ``show_range`` false (researcher decision of 2026-10-21) only the point estimate is
@@ -153,9 +217,11 @@ def narrative_hb(prediction: float, half_width: float, explanation_enabled: bool
     else:
         text = f"Perkiraan Hb (indikatif): {_fmt_num(prediction)} g/dL."
     if not explanation_enabled:
-        text += (" Perkiraan ini hanya indikatif. Dalam evaluasi, model Hb tidak lebih akurat daripada "
+        text += (" Perkiraan ini hanya indikatif. Dalam evaluasi, model Hb tidak terbukti lebih akurat daripada "
                  "menebak nilai rata-rata dan tidak dapat diandalkan untuk mendeteksi anemia, sehingga "
                  "penjelasan faktor tidak ditampilkan.")
+    if algorithm:
+        text += " " + model_sentence(algorithm)
     return text + " " + DISCLAIMER
 
 
@@ -176,7 +242,8 @@ def waterfall_figure(values: pd.Series, base: float, row_model_matrix: pd.Series
 
 
 def explain_ced_row(pipe: Any, row: pd.DataFrame, threshold: float, explain_cfg: Mapping[str, Any],
-                    config: Mapping[str, Any], explainer: shap.TreeExplainer | None = None) -> tuple[Any, str, float]:
+                    config: Mapping[str, Any], explainer: shap.TreeExplainer | None = None,
+                    algorithm: str | None = None) -> tuple[Any, str, float]:
     """Waterfall figure, narrative and probability for one CED input row."""
     values, base, Xt = shap_table(pipe, row, explainer)
     probability = float(pipe.predict_proba(row)[0, 1])
@@ -184,17 +251,19 @@ def explain_ced_row(pipe: Any, row: pd.DataFrame, threshold: float, explain_cfg:
                                 explain_cfg, config)
     fig = waterfall_figure(values.iloc[0], base, Xt.iloc[0], explain_cfg,
                            "Kontribusi tiap faktor terhadap perkiraan model (skala log-odds), bukan penyebab")
-    return fig, narrative_ced(probability, threshold, contrib), probability
+    return fig, narrative_ced(probability, threshold, contrib, algorithm), probability
 
 
-def explain_hb_row(pipe: Any, row: pd.DataFrame, half_width: float, explain_cfg: Mapping[str, Any]) -> tuple[Any, str, float]:
+def explain_hb_row(pipe: Any, row: pd.DataFrame, half_width: float, explain_cfg: Mapping[str, Any],
+                   enabled: bool | None = None, algorithm: str | None = None) -> tuple[Any, str, float]:
     """Narrative and prediction for one Hb input row. No figure when the explanation is disabled."""
     prediction = float(pipe.predict(row)[0])
-    enabled = bool(explain_cfg["hb_explanation_enabled"])
+    # ``enabled`` comes from the model selection gate (artifacts/final_models.json) when given.
+    enabled = bool(explain_cfg["hb_explanation_enabled"]) if enabled is None else bool(enabled)
     fig = None
     if enabled:
         values, base, Xt = shap_table(pipe, row)
         fig = waterfall_figure(values.iloc[0], base, Xt.iloc[0], explain_cfg,
                                "Kontribusi tiap faktor terhadap perkiraan Hb (g/dL), bukan penyebab")
     show_range = bool(explain_cfg.get("hb_show_range", True))
-    return fig, narrative_hb(prediction, half_width, enabled, show_range), prediction
+    return fig, narrative_hb(prediction, half_width, enabled, show_range, algorithm), prediction

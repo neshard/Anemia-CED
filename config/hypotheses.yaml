@@ -81,3 +81,4 @@ exploratory:
   - "Hb: split-conformal intervals with 90 percent nominal coverage (empirical coverage and mean width)"
   - "CED: reliability curve and Brier score"
   - "Decision Tree and Random Forest baselines for both models"
+  - "Boosting comparators (GBM, LightGBM, CatBoost, AdaBoost) against XGBoost for both models: paired bootstrap differences with 95 percent CIs, corrected resampled t-test, no verdict (supervisor revision 2026-10-27)"

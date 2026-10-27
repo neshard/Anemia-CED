@@ -31,7 +31,7 @@ def test_all_specs_build(config: dict) -> None:
         assert hasattr(est, "fit")
     assert HB_MODELS["ridge"].scale and CED_MODELS["logistic_regression"].scale
     assert HB_MODELS["dummy_mean"].space is None and CED_MODELS["dummy_prior"].space is None
-    assert {s.role for s in HB_MODELS.values()} == {"main", "baseline", "exploratory_baseline"}
+    assert {s.role for s in HB_MODELS.values()} == {"main", "baseline", "exploratory_baseline", "boosting_comparator"}
     assert not HB_MODELS["xgboost"].scale
 
 

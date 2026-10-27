@@ -1,0 +1,10 @@
+# Which saved models the dashboard loads (src/postmodel/inference.py, experiments/09_final_models.py).
+# The algorithm per target is not chosen here: 14_select_final_model.py applies the locked rule in
+# config/model_selection.yaml and 09 writes the chosen models with their metadata to models_file.
+models_file: artifacts/final_models.json
+# Used by 09 until artifacts/model_selection.json exists, and by the dashboard for metadata
+# written before algorithm names were stored.
+default_algorithm: xgboost
+# Largest absolute SHAP additivity error (raw model output: g/dL for Hb, log-odds for CED) that
+# a loaded model may have. Same value as config/model_selection.yaml additivity_tolerance.
+additivity_tolerance: 1.0e-4

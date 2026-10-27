@@ -250,6 +250,40 @@ tuning:
       max_depth: {type: int, low: 2, high: 8}
       min_samples_leaf: {type: int, low: 3, high: 30}
       max_features: {type: float, low: 0.3, high: 1.0}
+    # Boosting comparators (supervisor revision 2026-10-27). Ranges suit about 210 rows per
+    # inner training split (317 Hb and 328 CED per outer training fold).
+    gbm_regressor: &gbm_space
+      n_estimators: {type: int, low: 50, high: 500, step: 25}
+      learning_rate: {type: float, low: 0.01, high: 0.2, log: true}
+      max_depth: {type: int, low: 2, high: 5}
+      min_samples_leaf: {type: int, low: 5, high: 40}
+      subsample: {type: float, low: 0.6, high: 1.0}
+    gbm_classifier: *gbm_space
+    lgbm_regressor: &lgbm_space
+      n_estimators: {type: int, low: 50, high: 500, step: 25}
+      learning_rate: {type: float, low: 0.01, high: 0.2, log: true}
+      num_leaves: {type: int, low: 4, high: 31}
+      max_depth: {type: int, low: 2, high: 6}
+      min_child_samples: {type: int, low: 5, high: 40}   # LightGBM default 20 is large for 210 rows
+      reg_lambda: {type: float, low: 0.001, high: 10.0, log: true}
+      subsample: {type: float, low: 0.6, high: 1.0}
+      colsample_bytree: {type: float, low: 0.5, high: 1.0}
+    lgbm_classifier: *lgbm_space
+    catboost_regressor: &catboost_space
+      iterations: {type: int, low: 50, high: 500, step: 25}
+      learning_rate: {type: float, low: 0.01, high: 0.2, log: true}
+      depth: {type: int, low: 2, high: 6}
+      l2_leaf_reg: {type: float, low: 1.0, high: 10.0, log: true}
+    catboost_classifier: *catboost_space
+    adaboost_regressor:
+      n_estimators: {type: int, low: 50, high: 500, step: 25}
+      learning_rate: {type: float, low: 0.01, high: 1.0, log: true}
+      max_depth: {type: int, low: 1, high: 3}             # depth of the base decision tree
+      loss: {type: categorical, choices: [linear, square, exponential]}
+    adaboost_classifier:
+      n_estimators: {type: int, low: 50, high: 500, step: 25}
+      learning_rate: {type: float, low: 0.01, high: 1.0, log: true}
+      max_depth: {type: int, low: 1, high: 3}             # depth of the base decision tree
 
 thresholds:
   hb_flag_share_of_cases: 0.70   # cut-off on predicted Hb that flags 70 percent of true cases in inner-fold predictions
@@ -259,6 +293,17 @@ thresholds:
 models:
   xgb_n_jobs: 1              # single thread inside each fit keeps results reproducible
   rf_n_jobs: 1               # parallelism comes from outer folds instead
+  lgbm_n_jobs: 1
+  catboost_thread_count: 1
+
+# Descriptive comparison of XGBoost with the four boosting comparators (no verdict).
+comparison:
+  candidates: [xgboost, gbm, lightgbm, catboost, adaboost]
+  reference: xgboost
+  # Holm across the four XGBoost-versus-comparator differences per target on the primary
+  # metric (MAE for Hb, AUC for CED). Reporting only: the selection rule always uses the
+  # unadjusted 95 percent CI (config/model_selection.yaml).
+  holm_correction: true
 
 resampling:                  # exploratory comparisons only. Main models use no resampling.
   smotenc:

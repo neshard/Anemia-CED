@@ -56,6 +56,11 @@ def anonymous_user_id() -> str:
     return st.session_state["anonymous_user_id"]
 
 
-def footer() -> None:
+def footer(service: ScreeningService | None = None) -> None:
+    """Disclaimer, plus the algorithm behind each estimate when the service is given."""
     st.divider()
-    st.caption(FOOTER)
+    text = FOOTER
+    if service is not None:
+        text += (f" Model yang dipakai: KEK {service.algorithm_label('ced')}, Hb {service.algorithm_label('hb')}, "
+                 "dipilih dengan aturan yang ditetapkan sebelum hasil perbandingan dihitung.")
+    st.caption(text)

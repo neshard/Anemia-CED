@@ -1,0 +1,114 @@
+# Rule that picks the dashboard model per target (supervisor revision, 2026-10-27).
+# Applied by src/model_selection.py select_model, a deterministic function of the tables it reads
+# (experiments/14_select_final_model.py). The Hb model and the CED model may be different algorithms.
+#
+# Locked before any of the four new boosting models (GBM, LightGBM, CatBoost, AdaBoost) was run.
+# XGBoost, baseline, Decision Tree and Random Forest results had already been seen since
+# 2026-10-18 (see CHANGELOG). Changing this file after the new models are run is a deviation.
+
+status: locked
+locked_on: 2026-10-27
+
+# Only these five are ever selected. Decision Tree, Random Forest and the baselines
+# (mean-only, Ridge, class proportion, Logistic Regression) are never candidates.
+candidates: [xgboost, gbm, lightgbm, catboost, adaboost]
+preferred: xgboost
+
+targets:
+  hb:
+    metric: mae
+    direction: lower_is_better
+  ced:
+    metric: auc_roc
+    direction: higher_is_better
+
+# Point estimates: pooled out-of-fold predictions per repetition, averaged over the 5 repetitions
+# (same as the main evaluation). Paired differences: paired percentile bootstrap over the same
+# women, 2000 resamples per repetition, CI bounds averaged over repetitions. Always the unadjusted
+# 95 percent CI. The Holm flag in config.yaml (comparison.holm_correction) changes reporting only,
+# never this rule.
+paired_ci_level: 0.95
+# Fixed seeds of the paired bootstrap behind every selection CI (repetition r uses seed + r).
+# experiments/12 draws with these seeds and records them in table m04, and experiments/14
+# refuses an m04 produced with any other seed. They equal the seeds of the main evaluation in
+# experiments/08 (Hb 42 is also the seed of S1_hb_vs_mean), so the XGBoost numbers match d03/d04.
+paired_bootstrap_seed:
+  hb: 42
+  ced: 142
+
+steps:
+  1_eligibility: >
+    Applied first, before any provisional winner is chosen. A candidate is eligible only if a
+    shap.TreeExplainer can be built for its fitted model (no KernelExplainer or any other
+    fallback) and the SHAP additivity check passes (error at most additivity_tolerance) on every
+    one of the 25 outer-fold models of the main run (experiments/13, table m06). Ineligible
+    candidates are removed and play no further part. If no candidate is eligible for a target,
+    selection stops with an error naming that target: no model is selected, there is no fallback
+    to an ineligible model, and the decision goes to the researcher and supervisor. The final
+    model of the selected candidate is checked again by experiments/09, and the dashboard refuses
+    to load a model that fails.
+  2_provisional_winner: >
+    Among the eligible candidates only: the one with the best point estimate of the target metric
+    (lowest MAE for Hb, highest AUC-ROC for CED). An exact tie goes to the earlier entry in candidates.
+  3_equivalence_group: >
+    The provisional winner plus every eligible candidate whose paired difference against the
+    provisional winner has a 95 percent CI that contains 0. The difference is always
+    metric(candidate) minus metric(provisional winner), computed on the same resampled women.
+    For Hb (MAE, lower is better) the provisional winner has the lowest MAE, so the point
+    difference is 0 or positive and a CI entirely above 0 means the candidate is worse.
+    For CED (AUC-ROC, higher is better) the provisional winner has the highest AUC, so the point
+    difference is 0 or negative and a CI entirely below 0 means the candidate is worse.
+    In both cases a CI that contains 0 (bounds included) means equivalent. Only containment of 0
+    decides membership, so the sign convention never changes which models are in the group.
+    The group is defined relative to the provisional winner only. It is not transitive: two
+    members need not be equivalent to each other, and a candidate equivalent to a member but not
+    to the provisional winner is not in the group. The group may contain the provisional winner alone.
+  4_choice: >
+    If xgboost (preferred) is in the equivalence group, xgboost is selected. Otherwise the member
+    with the smallest inference_cost_proxy is selected. Remaining ties go to the earlier entry in
+    candidates.
+
+# Largest absolute gap between the SHAP sum plus base value and the raw model output, in g/dL for
+# Hb and in log-odds for CED. Derived, before any new model was run, from the XGBoost errors of
+# the locked run (up to 1.4e-5, results/exploratory/x19, caused by XGBoost's float32 arithmetic),
+# so it allows float rounding only. shap's own internal check is a much looser relative 1e-2.
+additivity_tolerance: 1.0e-4
+
+# Deterministic proxy for inference cost. Wall-clock times are recorded and reported
+# (results/tables/m05) but never used here. The proxy only matters in step 4 when xgboost is not
+# in the equivalence group. Its definition must not be changed after results are seen.
+inference_cost_proxy:
+  name: total_tree_nodes
+  definition: >
+    Total number of nodes (internal split nodes plus leaves) over all trees of the fitted model of
+    one outer fold (recorded as n_tree_nodes in the fold table), then the median over the 25 outer
+    folds of the main run.
+  per_library: >
+    XGBoost: rows of Booster.trees_to_dataframe(). GBM and AdaBoost: sum of tree_.node_count over
+    estimators_. LightGBM: sum over trees of 2 * num_leaves - 1 from booster_.dump_model().
+    CatBoost: sum over trees of 2 * leaf_count - 1 from get_tree_leaf_counts().
+  caveat: >
+    The 2 x leaves - 1 convention for CatBoost's oblivious trees is used for uniformity across
+    libraries (it counts the equivalent full binary tree). The proxy measures model size, not the
+    exact inference time: an oblivious tree of depth d needs only d comparisons per prediction.
+
+# Proposal 3.6, judged exactly like component S1_hb_vs_mean of config/hypotheses.yaml but for the
+# selected Hb model: MAE reduction versus dummy_mean of at least 0.10 g/dL, rule point_and_ci at
+# 95 percent, same bootstrap seed as S1 (bootstrap_seed below).
+hb_explanation_gate:
+  versus: dummy_mean
+  metric: mae
+  quantity: reduction
+  op: ">="
+  value: 0.10
+  rule: point_and_ci
+  ci_level: 0.95
+  bootstrap_seed: 42          # the seed of S1_hb_vs_mean in experiments/08
+  # Only the verdict "supported" enables the Hb SHAP explanation in the dashboard.
+  # "inconclusive" and "not_supported" both keep the Hb output labelled indicative,
+  # with CED as the main result.
+  enable_on: [supported]
+
+optimism_note: >
+  The selected model was chosen from five candidates on the same data, so its cross-validated
+  performance is optimistic. All five candidates are reported side by side.

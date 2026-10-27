@@ -31,9 +31,9 @@ from components.results import results_tabs  # noqa: E402
 from components.state import anonymous_user_id, footer, get_service, get_store  # noqa: E402
 
 st.title("Skrining risiko KEK ibu hamil")
-st.caption("Prototipe penelitian. Hasil utama adalah perkiraan risiko KEK. Perkiraan Hb hanya indikatif.")
-
 service = get_service()
+st.caption("Prototipe penelitian. Hasil utama adalah perkiraan risiko KEK."
+           + ("" if service.hb_explanation_enabled else " Perkiraan Hb hanya indikatif."))
 store = get_store()
 
 answers = questionnaire(service, st.session_state.get("last_answers"))
@@ -59,4 +59,4 @@ if result is not None:
         st.session_state["saved_id"] = store.create(inputs, prediction, anonymous_user_id())
         st.rerun()
 
-footer()
+footer(service)

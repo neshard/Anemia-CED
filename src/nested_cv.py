@@ -40,7 +40,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.metrics import mean_absolute_error, roc_auc_score
 
 from src.labels import ced_label_at_most, trimester_anemia
-from src.models import ModelSpec
+from src.models import ModelSpec, tree_node_count
 from src.preprocessing import build_pipeline, model_input_columns
 from src.resampling import make_smogn, make_smotenc
 from src.splits import BoundGroupKFold, KeyStratifiedRepeatedKFold, assert_disjoint, build_strat_key, inner_splits
@@ -341,6 +341,7 @@ def run_fold(run: RunSpec, data: AnalysisData, config: Mapping[str, Any], repeat
     record.update({"tuning_seconds": tuning_seconds, "fit_seconds": fit_seconds, "predict_seconds": predict_seconds,
                    "predict_seconds_per_row": predict_seconds / len(test_idx)})
     steps = pipe.named_steps
+    record["n_tree_nodes"] = tree_node_count(steps["model"])  # deterministic inference cost proxy
     record["selected_features"] = (list(steps["select"].selected_features_) if "select" in steps
                                    else list(steps["columns"].columns))
 

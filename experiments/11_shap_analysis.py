@@ -2,19 +2,21 @@
 # # 11 SHAP analysis (Phase D, proposal 3.6)
 # Exploratory, pre-specified. No verdict. results/tables is never modified.
 #
-# 1. Fold models: each of the 25 outer-fold XGBoost pipelines of the main run is refitted
+# The model per target is the one in artifacts/final_models.json (selected by 14, XGBoost by
+# default). SHAP for all five boosting candidates is in 13_shap_boosting.py.
+# 1. Fold models: each of the 25 outer-fold pipelines of the main run is refitted
 #    with its stored hyperparameters and checked to reproduce the locked out-of-fold
 #    predictions exactly. SHAP is computed on each outer TEST fold, so the global ranking is
 #    out-of-sample. Features not selected in a fold contribute 0 in that fold.
 # 2. Stability: mean pairwise Spearman correlation of mean |SHAP| across the 25 fold models,
 #    and how often a woman keeps the same top-3 features across the 5 repetitions.
 # 3. Final models (fit on all eligible records, fixed dashboard list): TreeExplainer,
-#    beeswarm, built-in XGBoost importance (gain, cover, weight) against mean |SHAP|
+#    beeswarm, built-in importance (XGBoost: gain, cover, weight) against mean |SHAP|
 #    (Spearman), and the SHAP additivity check.
 # 4. Example explanation for the dashboard on a SYNTHETIC profile (median answers), never a
 #    real woman.
-# Hb SHAP is reported but marked: the Hb model did not beat the mean-only baseline, so its
-# explanation is not shown in the dashboard (proposal 3.6, config/explain.yaml).
+# Hb SHAP is reported but marked unless the Hb model passed the proposal 3.6 gate (judged in 14,
+# like S1). Without it the explanation is not shown in the dashboard.
 #
 # Run from the project root:  python experiments/11_shap_analysis.py
 
@@ -61,6 +63,9 @@ TOPK = int(explain_cfg["shap"]["top_k_stability"])
 df = clean_dataset(config).frame
 final = json.loads((ROOT / "artifacts" / "final_models.json").read_text(encoding="utf-8"))
 written: list[str] = []
+ALG = {t: final[t].get("algorithm", "xgboost") for t in ("hb", "ced")}
+HB_SHOWN = bool(final["hb"].get("hb_explanation_enabled", False))
+HB_MARK = "" if HB_SHOWN else " (model did not pass the mean-baseline gate, not shown in dashboard)"
 
 
 def save(table: pd.DataFrame, name: str) -> None:
@@ -80,12 +85,13 @@ def savefig(fig, name: str) -> None:  # type: ignore[no-untyped-def]
 
 # %% 1 and 2. Fold models: reproduce, explain out-of-sample, measure stability
 global_rows, stability_rows, repro_rows = [], [], []
-for target, spec in (("hb", HB_MODELS["xgboost"]), ("ced", CED_MODELS["xgboost"])):
+for target, models in (("hb", HB_MODELS), ("ced", CED_MODELS)):
+    spec = models[ALG[target]]
     data = build_data(config, df, target)
     run = main_run(spec, config)
     splits = list(outer_splitter(run, data, config).split(data.X))
-    folds = pd.read_csv(ROOT / "results" / "folds" / f"main__{target}__xgboost__main.csv")
-    oof = pd.read_csv(ROOT / "results" / "oof" / f"main__{target}__xgboost__main.csv").set_index(["repeat", "anon_id"])
+    folds = pd.read_csv(ROOT / "results" / "folds" / f"main__{target}__{ALG[target]}__main.csv")
+    oof = pd.read_csv(ROOT / "results" / "oof" / f"main__{target}__{ALG[target]}__main.csv").set_index(["repeat", "anon_id"])
     col = "pred" if target == "hb" else "proba"
     per_woman: list[pd.DataFrame] = []
     fold_vectors: list[np.ndarray] = []
@@ -105,7 +111,7 @@ for target, spec in (("hb", HB_MODELS["xgboost"]), ("ced", CED_MODELS["xgboost"]
         full_vals = values.reindex(columns=POOL, fill_value=0.0)
         fold_vectors.append(full_vals.abs().mean().to_numpy())
         per_woman.append(full_vals.assign(repeat=int(row["repeat"])))
-    repro_rows.append({"target": target, "fold_models": len(splits), "max_abs_prediction_difference": max_pred_diff,
+    repro_rows.append({"target": target, "model": ALG[target], "fold_models": len(splits), "max_abs_prediction_difference": max_pred_diff,
                        "selected_features_identical": bool(selection_match),
                        "max_shap_additivity_error": max_add_err})
 
@@ -117,6 +123,7 @@ for target, spec in (("hb", HB_MODELS["xgboost"]), ("ced", CED_MODELS["xgboost"]
     g = g.sort_values("mean_abs_shap", ascending=False, ignore_index=True)
     g.insert(0, "rank", range(1, len(g) + 1))
     g.insert(0, "target", target)
+    g.insert(1, "model", ALG[target])
     global_rows.append(g)
 
     rhos = [spearmanr(a, b).statistic for a, b in itertools.combinations(fold_vectors, 2)]
@@ -127,7 +134,7 @@ for target, spec in (("hb", HB_MODELS["xgboost"]), ("ced", CED_MODELS["xgboost"]
         pairs = list(itertools.combinations(range(len(tops)), 2))
         same_topk.append(np.mean([tops[a] == tops[b] for a, b in pairs]))
         same_top1.append(np.mean([firsts[a] == firsts[b] for a, b in pairs]))
-    stability_rows.append({"target": target, "fold_models": len(fold_vectors),
+    stability_rows.append({"target": target, "model": ALG[target], "fold_models": len(fold_vectors),
                            "mean_pairwise_spearman_mean_abs_shap": float(np.mean(rhos)),
                            "min_pairwise_spearman": float(np.min(rhos)),
                            f"share_same_top{TOPK}_set_across_repetitions": float(np.mean(same_topk)),
@@ -135,7 +142,7 @@ for target, spec in (("hb", HB_MODELS["xgboost"]), ("ced", CED_MODELS["xgboost"]
                            "women": int(len(same_topk))})
 
 global_table = pd.concat(global_rows, ignore_index=True)
-global_table["note"] = np.where(global_table["target"] == "hb",
+global_table["note"] = np.where((global_table["target"] == "hb") & (not HB_SHOWN),
                                 "Hb model did not beat the mean-only baseline. Not shown in the dashboard.",
                                 "out-of-sample (outer test folds)")
 save(global_table.round(4), "x17_shap_global_ranking_out_of_sample")
@@ -149,8 +156,8 @@ for target in ("ced", "hb"):
     ax.errorbar(g["mean_abs_shap"], g["label_id"], xerr=[g["mean_abs_shap"] - g["min_over_repetitions"],
                 g["max_over_repetitions"] - g["mean_abs_shap"]], fmt="none", ecolor="#52514e", lw=1, capsize=2)
     unit = "log-odds" if target == "ced" else "g/dL"
-    title = ("CED model: mean |SHAP| on outer test folds" if target == "ced"
-             else "Hb model: mean |SHAP| (model did not beat the mean baseline)")
+    title = (f"CED model ({ALG['ced']}): mean |SHAP| on outer test folds" if target == "ced"
+             else f"Hb model ({ALG['hb']}): mean |SHAP|{HB_MARK}")
     ax.set_title(title, loc="left", fontsize=10)
     ax.set_xlabel(f"Mean |SHAP| ({unit}). Bars: range over 5 repetitions")
     ax.grid(axis="x", color="#e1e0d9", lw=0.6)
@@ -163,16 +170,16 @@ for target in ("ced", "hb"):
 # %% 3. Final models: explainer, beeswarm, built-in importance, additivity
 imp_rows, final_rows = [], []
 for target in ("ced", "hb"):
-    pipe = joblib.load(ROOT / "artifacts" / f"final_{target}_xgboost.joblib")
+    pipe = joblib.load(ROOT / final[target].get("artifact", f"artifacts/final_{target}_{ALG[target]}.joblib"))
     data = build_data(config, df, target, analysis="final")
     X = data.X
     values, base, Xt = shap_table(pipe, X)
     mean_abs = values.abs().mean()
     imp = builtin_importance(pipe).join(mean_abs.rename("mean_abs_shap"))
-    for kind in ("gain", "cover", "weight"):
-        imp_rows.append({"target": target, "importance": kind, "n_features": len(imp),
+    for kind in [c for c in imp.columns if c != "mean_abs_shap"]:
+        imp_rows.append({"target": target, "model": ALG[target], "importance": kind, "n_features": len(imp),
                          "spearman_vs_mean_abs_shap": float(spearmanr(imp[kind], imp["mean_abs_shap"]).statistic)})
-    final_rows.append({"target": target, "n_records": len(X), "features": "|".join(Xt.columns),
+    final_rows.append({"target": target, "model": ALG[target], "n_records": len(X), "features": "|".join(Xt.columns),
                        "base_value": base, "max_additivity_error": additivity_error(pipe, X),
                        "note": "in-sample SHAP of the final model, for the dashboard explainer only"})
     explainer = tree_explainer(pipe)
@@ -182,7 +189,7 @@ for target in ("ced", "hb"):
     shap.summary_plot(values.to_numpy(), Xt, feature_names=[LABELS.get(c, c) for c in Xt.columns], show=False,
                       plot_size=(7.5, 4.2))
     fig = plt.gcf()
-    fig.suptitle(("CED final model" if target == "ced" else "Hb final model (not shown in dashboard)")
+    fig.suptitle((f"CED final model ({ALG['ced']})" if target == "ced" else f"Hb final model ({ALG['hb']}){HB_MARK}")
                  + ", SHAP per woman, in-sample", x=0.01, ha="left", fontsize=10)
     savefig(fig, f"x_fig03_shap_beeswarm_final_{target}")
 save(pd.DataFrame(imp_rows).round(4), "x20_shap_vs_builtin_importance_final")
@@ -191,11 +198,13 @@ save(pd.DataFrame(final_rows).round(8), "x21_final_model_explainer_check")
 # %% 4. Example explanation on a synthetic median profile (not a real woman)
 profile = df[POOL].median(numeric_only=True).round().to_frame().T
 profile.index = ["synthetic_median_profile"]
-ced_pipe = joblib.load(ROOT / "artifacts" / "final_ced_xgboost.joblib")
-hb_pipe = joblib.load(ROOT / "artifacts" / "final_hb_xgboost.joblib")
-fig, ced_text, prob = explain_ced_row(ced_pipe, profile, float(final["ced"]["threshold_youden"]), explain_cfg, config)
+ced_pipe = joblib.load(ROOT / final["ced"].get("artifact", f"artifacts/final_ced_{ALG['ced']}.joblib"))
+hb_pipe = joblib.load(ROOT / final["hb"].get("artifact", f"artifacts/final_hb_{ALG['hb']}.joblib"))
+fig, ced_text, prob = explain_ced_row(ced_pipe, profile, float(final["ced"]["threshold_youden"]), explain_cfg, config,
+                                      algorithm=ALG["ced"])
 savefig(fig, "x_fig04_example_waterfall_ced_synthetic_profile")
-_, hb_text, hb_pred = explain_hb_row(hb_pipe, profile, float(final["hb"]["interval_half_width"]), explain_cfg)
+_, hb_text, hb_pred = explain_hb_row(hb_pipe, profile, float(final["hb"]["interval_half_width"]), explain_cfg,
+                                     enabled=HB_SHOWN, algorithm=ALG["hb"])
 example = OUT / "x22_example_narrative_synthetic_profile_exploratory.txt"
 example.write_text(f"[{LABEL}] Synthetic median profile, not a real woman.\n\nCED:\n{ced_text}\n\nHb:\n{hb_text}\n",
                    encoding="utf-8")

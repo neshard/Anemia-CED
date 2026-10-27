@@ -40,6 +40,11 @@ FIG = OUT / "figures"
 FIG.mkdir(parents=True, exist_ok=True)
 B, SEED = int(hyp["n_bootstrap"]), int(config["project"]["random_seed"])
 written: list[str] = []
+# The selected algorithm per target (14_select_final_model.py), XGBoost until a selection exists.
+_sel_path = ROOT / "artifacts" / "model_selection.json"
+_sel = json.loads(_sel_path.read_text(encoding="utf-8")) if _sel_path.exists() else {}
+ALG = {t: _sel.get(t, {}).get("algorithm", "xgboost") for t in ("hb", "ced")}
+print(f"Calibration and intervals for the selected models: {ALG}")
 
 
 def save(df: pd.DataFrame, name: str) -> None:
@@ -51,8 +56,8 @@ def save(df: pd.DataFrame, name: str) -> None:
     written.append(str(path.relative_to(ROOT)))
 
 
-# %% CED: cross-fitted recalibration of the main XGBoost out-of-fold probabilities
-oof = pd.read_csv(ROOT / "results" / "oof" / "main__ced__xgboost__main.csv")
+# %% CED: cross-fitted recalibration of the selected model's main out-of-fold probabilities
+oof = pd.read_csv(ROOT / "results" / "oof" / f"main__ced__{ALG['ced']}__main.csv")
 lr = pd.read_csv(ROOT / "results" / "oof" / "main__ced__logistic_regression__main.csv")
 frames = {"uncalibrated": oof[["anon_id", "repeat", "fold", "y_true", "proba"]].copy(),
           "logistic_regression_reference": lr[["anon_id", "repeat", "fold", "y_true", "proba"]].copy()}
@@ -91,7 +96,10 @@ decision = pd.DataFrame([{
     "rule": explain_cfg["calibration"]["dashboard_rule"],
     "brier_uncalibrated_minus_platt": platt["point"], "ci_low": platt["ci_low"], "ci_high": platt["ci_high"],
     "dashboard_uses": "platt-recalibrated probability" if use_platt else "uncalibrated probability",
+    "model": ALG["ced"],
 }])
+if use_platt:
+    print("NOTE: the rule selects Platt recalibration, which the dashboard does not apply yet. Ask the researcher.")
 save(decision.round(5), "x14_ced_dashboard_calibration_decision")
 
 bins = []
@@ -125,7 +133,7 @@ plt.close(fig)
 written.append("results/exploratory/figures/x_fig01_ced_reliability.png")
 
 # %% Hb: split-conformal interval coverage and width
-hb = pd.read_csv(ROOT / "results" / "oof" / "main__hb__xgboost__main.csv")
+hb = pd.read_csv(ROOT / "results" / "oof" / f"main__hb__{ALG['hb']}__main.csv")
 rows = []
 for group, mask in (("all", hb["y_true"].notna()), ("anemic (Hb < 11)", hb["y_binary"] == 1),
                     ("not anemic", hb["y_binary"] == 0)):

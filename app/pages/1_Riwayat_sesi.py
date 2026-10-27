@@ -26,7 +26,7 @@ sessions = store.list()
 
 if sessions.empty:
     st.info("Belum ada sesi yang tersimpan.")
-    footer()
+    footer(service)
     st.stop()
 
 st.caption("Setiap sesi dikenali dengan kode tanggal dan nomor urut. Cocokkan kode dengan buku register posyandu. "
@@ -77,4 +77,4 @@ with col2:
         st.success("Sesi dihapus.")
         st.rerun()
 
-footer()
+footer(service)

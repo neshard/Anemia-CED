@@ -27,12 +27,14 @@ import pandas as pd
 
 INPUT_COLUMNS: tuple[str, ...] = (
     "age", "anc_visits", "prepreg_weight", "height", "n_children", "education_mother", "egg_freq",
+    "n_under5", "income", "food_taboo",  # asked only when a loaded model uses them
     *(f"hfias_q{i}" for i in range(1, 10)),
 )
 PREDICTION_COLUMNS: tuple[str, ...] = (
     "predicted_hb", "hb_lower", "hb_upper", "anemia_class", "ced_probability", "ced_label",
-    "top5_shap_hb", "top5_shap_ced", "model_note",
+    "top5_shap_hb", "top5_shap_ced", "model_note", "hb_algorithm", "ced_algorithm",
 )
+REAL_INPUTS = ("age", "anc_visits", "prepreg_weight", "height", "n_children", "n_under5")
 FORBIDDEN_STORAGE = {"name", "nama", "phone", "hp", "whatsapp", "email", "latitude", "longitude", "respondent_code"}
 
 SCHEMA = f"""
@@ -49,7 +51,7 @@ CREATE TABLE IF NOT EXISTS code_counter (
 );
 CREATE TABLE IF NOT EXISTS inputs (
     session_id TEXT PRIMARY KEY REFERENCES sessions(session_id) ON DELETE CASCADE,
-    {", ".join(f"{c} {'REAL' if c in ('age', 'anc_visits', 'prepreg_weight', 'height', 'n_children') else 'TEXT'}" for c in INPUT_COLUMNS)},
+    {", ".join(f"{c} {'REAL' if c in REAL_INPUTS else 'TEXT'}" for c in INPUT_COLUMNS)},
     self_reported_fields TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS predictions (
@@ -62,7 +64,9 @@ CREATE TABLE IF NOT EXISTS predictions (
     ced_label INTEGER NOT NULL,
     top5_shap_hb TEXT,
     top5_shap_ced TEXT,
-    model_note TEXT
+    model_note TEXT,
+    hb_algorithm TEXT,
+    ced_algorithm TEXT
 );
 """
 
@@ -81,6 +85,13 @@ class SessionStore:
             if "session_code" not in columns:  # database created before readable codes existed
                 con.execute("ALTER TABLE sessions ADD COLUMN session_code TEXT")
             con.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_session_code ON sessions(session_code)")
+            # databases created before optional inputs and algorithm names were stored
+            for table, wanted in (("inputs", {c: "REAL" if c in REAL_INPUTS else "TEXT" for c in INPUT_COLUMNS}),
+                                  ("predictions", {"hb_algorithm": "TEXT", "ced_algorithm": "TEXT"})):
+                have = {r[1] for r in con.execute(f"PRAGMA table_info({table})").fetchall()}
+                for col, kind in wanted.items():
+                    if col not in have:
+                        con.execute(f"ALTER TABLE {table} ADD COLUMN {col} {kind}")
 
     @contextmanager
     def _connect(self) -> Iterator[sqlite3.Connection]:
@@ -158,12 +169,12 @@ class SessionStore:
         with self._connect() as con:
             rows = con.execute(
                 "SELECT s.session_id, s.session_code, s.timestamp, p.ced_probability, p.ced_label, p.predicted_hb, "
-                "p.anemia_class "
+                "p.anemia_class, p.hb_algorithm, p.ced_algorithm "
                 "FROM sessions s LEFT JOIN predictions p ON p.session_id = s.session_id "
                 "ORDER BY s.timestamp DESC, s.rowid DESC LIMIT ?", (int(limit),)).fetchall()
         return pd.DataFrame([dict(r) for r in rows],
                             columns=["session_id", "session_code", "timestamp", "ced_probability", "ced_label",
-                                     "predicted_hb", "anemia_class"])
+                                     "predicted_hb", "anemia_class", "hb_algorithm", "ced_algorithm"])
 
     def session_code(self, session_id: str) -> str | None:
         """The readable code of a session, or None."""

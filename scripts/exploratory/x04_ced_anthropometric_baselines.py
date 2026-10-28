@@ -100,23 +100,27 @@ def fold_auc(df: pd.DataFrame) -> pd.Series:
     return df.groupby(["repeat", "fold"]).apply(lambda b: ced_metrics(b)["auc_roc"], include_groups=False)
 
 
-for metric, quantity in (("auc_roc", "difference"), ("pr_auc", "difference"), ("brier", "reduction")):
-    table = paired_table(rb, "xgboost", ["logistic_regression", *VARIANTS], metric, quantity, 0.95)
-    if metric == "auc_roc":
-        ref = fold_auc(frames["xgboost"])
-        tt = [corrected_resampled_ttest((ref - fold_auc(frames[v])).to_numpy(), folds_main["n_train"].mean(),
-                                        folds_main["n_test"].mean()) for v in table["versus"]]
-        table["t_corrected"] = [t["t"] for t in tt]
-        table["p_corrected_approximate"] = [t["p"] for t in tt]
-    diffs.append(table)
+# Reference models: XGBoost, and the main seven-feature Logistic Regression (does the rest of the
+# questionnaire add anything to the anthropometric questions within the same model family?).
+COMPARISONS = {"xgboost": ["logistic_regression", *VARIANTS], "logistic_regression": list(VARIANTS)}
+for reference, comparators in COMPARISONS.items():
+    for metric, quantity in (("auc_roc", "difference"), ("pr_auc", "difference"), ("brier", "reduction")):
+        table = paired_table(rb, reference, comparators, metric, quantity, 0.95)
+        if metric == "auc_roc":
+            ref = fold_auc(frames[reference])
+            tt = [corrected_resampled_ttest((ref - fold_auc(frames[v])).to_numpy(), folds_main["n_train"].mean(),
+                                            folds_main["n_test"].mean()) for v in table["versus"]]
+            table["t_corrected"] = [t["t"] for t in tt]
+            table["p_corrected_approximate"] = [t["p"] for t in tt]
+        diffs.append(table)
 diffs = pd.concat(diffs, ignore_index=True)
-diffs["note"] = ("XGBoost minus comparator for AUC and PR-AUC, comparator minus XGBoost for Brier: positive favours "
-                 "XGBoost. Post hoc, no verdict.")
+diffs["note"] = ("model minus comparator for AUC and PR-AUC, comparator minus model for Brier: positive favours the "
+                 "model in the first column. Post hoc, no verdict.")
 save(diffs.round(4), "x27_ced_anthropometric_baselines_paired_differences")
 
 params = pd.concat(fold_rows, ignore_index=True)[["variant", "params", "threshold_youden"]]
 print(summary[summary["metric"].isin(["auc_roc", "pr_auc", "brier"])][["model", "metric", "point", "ci_low", "ci_high"]]
       .round(3).to_string(index=False))
-print(diffs[["versus", "metric", "quantity", "point", "ci_low", "ci_high"]].round(3).to_string(index=False))
+print(diffs[["model", "versus", "metric", "quantity", "point", "ci_low", "ci_high"]].round(3).to_string(index=False))
 print("median tuned C per variant:",
       params.assign(C=params["params"].map(lambda s: float(eval(s)["C"]))).groupby("variant")["C"].median().round(4).to_dict())

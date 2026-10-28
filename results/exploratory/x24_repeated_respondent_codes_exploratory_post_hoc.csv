@@ -1,0 +1,18 @@
+label,item,value
+"exploratory, post hoc",records in the raw export,420.0
+"exploratory, post hoc",records with an empty respondent code,0.0
+"exploratory, post hoc",distinct respondent codes,381.0
+"exploratory, post hoc",codes used more than once,17.0
+"exploratory, post hoc",records beyond the first per code (the 39 of the cleaning report),39.0
+"exploratory, post hoc",codes used 2 times,14.0
+"exploratory, post hoc",codes used 4 times,1.0
+"exploratory, post hoc",codes used 12 times,2.0
+"exploratory, post hoc",repeated records: different name (code reused for a different woman),37.0
+"exploratory, post hoc",  same health center as the first record (different name),32.0
+"exploratory, post hoc",  median differing analysed fields (different name),14.0
+"exploratory, post hoc",repeated records: identical on every analysed field (same woman entered twice),1.0
+"exploratory, post hoc",  same health center as the first record (identical on every analysed field),1.0
+"exploratory, post hoc",  median differing analysed fields (identical on every analysed field),0.0
+"exploratory, post hoc","repeated records: same name, some answers differ (same woman entered twice with changes)",1.0
+"exploratory, post hoc","  same health center as the first record (same name, some answers differ)",1.0
+"exploratory, post hoc","  median differing analysed fields (same name, some answers differ)",1.0

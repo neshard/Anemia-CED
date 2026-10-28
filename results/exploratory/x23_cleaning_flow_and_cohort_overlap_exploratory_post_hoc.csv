@@ -1,0 +1,19 @@
+label,item,n
+"exploratory, post hoc",records after removing exact duplicates,419
+"exploratory, post hoc",records without any usable target (removed),1
+"exploratory, post hoc",  of which Hb recorded as 0,1
+"exploratory, post hoc",  of which Hb above the valid maximum,0
+"exploratory, post hoc",  of which MUAC outside the valid range,1
+"exploratory, post hoc",  of which MUAC missing,0
+"exploratory, post hoc",records analysed,418
+"exploratory, post hoc",Hb recorded as 0 (all records),16
+"exploratory, post hoc",MUAC outside the valid range (all records),9
+"exploratory, post hoc",Hb above the valid maximum (all records),7
+"exploratory, post hoc",Hb cohort,396
+"exploratory, post hoc",CED cohort,410
+"exploratory, post hoc",in both cohorts,388
+"exploratory, post hoc",Hb cohort only,8
+"exploratory, post hoc",CED cohort only,22
+"exploratory, post hoc",Hb recorded as 0 and in the CED cohort,15
+"exploratory, post hoc",Hb above the valid maximum and in the CED cohort,7
+"exploratory, post hoc",MUAC outside the valid range and in the Hb cohort,8

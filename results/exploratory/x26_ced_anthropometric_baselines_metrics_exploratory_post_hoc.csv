@@ -1,0 +1,36 @@
+label,model,metric,point,ci_low,ci_high,ci_level,point_min,point_max,n_repetitions,features
+"exploratory, post hoc",xgboost,auc_roc,0.7734,0.7191,0.8234,0.95,0.7674,0.7812,5,per-fold selected (7)
+"exploratory, post hoc",xgboost,pr_auc,0.5504,0.4605,0.6495,0.95,0.5259,0.5866,5,per-fold selected (7)
+"exploratory, post hoc",xgboost,brier,0.1588,0.1398,0.1796,0.95,0.1546,0.1622,5,per-fold selected (7)
+"exploratory, post hoc",xgboost,sensitivity,0.7225,0.6369,0.8049,0.95,0.6937,0.7568,5,per-fold selected (7)
+"exploratory, post hoc",xgboost,specificity,0.7284,0.6777,0.7782,0.95,0.6923,0.7592,5,per-fold selected (7)
+"exploratory, post hoc",xgboost,ppv,0.4977,0.4205,0.575,0.95,0.4682,0.519,5,per-fold selected (7)
+"exploratory, post hoc",xgboost,npv,0.8762,0.8335,0.9159,0.95,0.8656,0.8875,5,per-fold selected (7)
+"exploratory, post hoc",logistic_regression,auc_roc,0.7944,0.7435,0.8424,0.95,0.781,0.8018,5,per-fold selected (7)
+"exploratory, post hoc",logistic_regression,pr_auc,0.6059,0.5115,0.6982,0.95,0.5786,0.6251,5,per-fold selected (7)
+"exploratory, post hoc",logistic_regression,brier,0.1523,0.1333,0.1729,0.95,0.149,0.1569,5,per-fold selected (7)
+"exploratory, post hoc",logistic_regression,sensitivity,0.7207,0.6356,0.8026,0.95,0.7027,0.7387,5,per-fold selected (7)
+"exploratory, post hoc",logistic_regression,specificity,0.7304,0.6792,0.7795,0.95,0.709,0.7525,5,per-fold selected (7)
+"exploratory, post hoc",logistic_regression,ppv,0.4987,0.421,0.5751,0.95,0.479,0.5163,5,per-fold selected (7)
+"exploratory, post hoc",logistic_regression,npv,0.8757,0.8336,0.9142,0.95,0.8706,0.884,5,per-fold selected (7)
+"exploratory, post hoc",lr_weight,auc_roc,0.7772,0.726,0.8253,0.95,0.7598,0.7907,5,pre-pregnancy weight
+"exploratory, post hoc",lr_weight,pr_auc,0.5701,0.4798,0.6648,0.95,0.5357,0.6024,5,pre-pregnancy weight
+"exploratory, post hoc",lr_weight,brier,0.1616,0.1433,0.1809,0.95,0.1561,0.1699,5,pre-pregnancy weight
+"exploratory, post hoc",lr_weight,sensitivity,0.7099,0.6227,0.7941,0.95,0.6667,0.7477,5,pre-pregnancy weight
+"exploratory, post hoc",lr_weight,specificity,0.7191,0.6673,0.7683,0.95,0.6522,0.7793,5,pre-pregnancy weight
+"exploratory, post hoc",lr_weight,ppv,0.487,0.4101,0.5627,0.95,0.4439,0.5286,5,pre-pregnancy weight
+"exploratory, post hoc",lr_weight,npv,0.87,0.827,0.9112,0.95,0.863,0.8745,5,pre-pregnancy weight
+"exploratory, post hoc",lr_bmi,auc_roc,0.7792,0.7266,0.8283,0.95,0.7609,0.7967,5,pre-pregnancy BMI
+"exploratory, post hoc",lr_bmi,pr_auc,0.5677,0.4756,0.664,0.95,0.5393,0.5884,5,pre-pregnancy BMI
+"exploratory, post hoc",lr_bmi,brier,0.1615,0.1435,0.1807,0.95,0.1562,0.1711,5,pre-pregnancy BMI
+"exploratory, post hoc",lr_bmi,sensitivity,0.7495,0.6676,0.8269,0.95,0.7387,0.7748,5,pre-pregnancy BMI
+"exploratory, post hoc",lr_bmi,specificity,0.7311,0.6802,0.7801,0.95,0.7157,0.7391,5,pre-pregnancy BMI
+"exploratory, post hoc",lr_bmi,ppv,0.5086,0.4307,0.584,0.95,0.5029,0.5155,5,pre-pregnancy BMI
+"exploratory, post hoc",lr_bmi,npv,0.8872,0.8463,0.9245,0.95,0.8831,0.8954,5,pre-pregnancy BMI
+"exploratory, post hoc",lr_weight_height,auc_roc,0.7962,0.7448,0.844,0.95,0.7925,0.7992,5,pre-pregnancy weight + height
+"exploratory, post hoc",lr_weight_height,pr_auc,0.595,0.5025,0.6875,0.95,0.5872,0.6087,5,pre-pregnancy weight + height
+"exploratory, post hoc",lr_weight_height,brier,0.1537,0.135,0.1731,0.95,0.1528,0.1543,5,pre-pregnancy weight + height
+"exploratory, post hoc",lr_weight_height,sensitivity,0.7207,0.6351,0.802,0.95,0.6847,0.7387,5,pre-pregnancy weight + height
+"exploratory, post hoc",lr_weight_height,specificity,0.7712,0.7222,0.8179,0.95,0.7592,0.796,5,pre-pregnancy weight + height
+"exploratory, post hoc",lr_weight_height,ppv,0.5394,0.4585,0.6173,0.95,0.5263,0.5547,5,pre-pregnancy weight + height
+"exploratory, post hoc",lr_weight_height,npv,0.8816,0.8414,0.9191,0.95,0.8718,0.8876,5,pre-pregnancy weight + height

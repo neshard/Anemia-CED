@@ -14,7 +14,7 @@ The hypothesis verdicts are summarised in [results/report.md](results/report.md)
 
 The real questionnaire data are **not** in this repository. They describe identifiable pregnant women and are kept by the researcher under the study's ethics conditions. Only aggregate results are published here.
 
-[data/synthetic/synthetic_dataset.csv](data/synthetic/synthetic_dataset.csv) contains 400 **fictitious** records in the exact format of the Google Forms export, so that the code and the tests run without the real data. Numbers produced from it are meaningless.
+[data/synthetic/synthetic_dataset.csv](data/synthetic/synthetic_dataset.csv) contains 400 **fictitious** records in the exact format of the Google Forms export, so that the code and the tests run without the real data. Numbers produced from it are meaningless. It is produced by [scripts/make_synthetic_dataset.py](scripts/make_synthetic_dataset.py) (`python scripts/make_synthetic_dataset.py`, defaults reproduce the file byte for byte; `--n`, `--seed` and `--out` make other sizes).
 
 ## Setup
 

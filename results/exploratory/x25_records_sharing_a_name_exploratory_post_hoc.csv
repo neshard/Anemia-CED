@@ -1,0 +1,11 @@
+label,item,value
+"exploratory, post hoc",records sharing a full name with another record,40.0
+"exploratory, post hoc",pairs of records with the same full name,23.0
+"exploratory, post hoc",  of which with the same respondent code,2.0
+"exploratory, post hoc",  median differing fields of the 21 x02 fields,8.0
+"exploratory, post hoc",  equal on all five stable attributes,4.0
+"exploratory, post hoc","probable repeats (same Hb, MUAC, weight and interview date)",6.0
+"exploratory, post hoc",  caught by the x02 strict rule,3.0
+"exploratory, post hoc",  caught by the x02 loose rule,2.0
+"exploratory, post hoc",  not caught by either rule (still in every analysis),1.0
+"exploratory, post hoc",pairs with the same name but different visit values (different women or visits),17.0

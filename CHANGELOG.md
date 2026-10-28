@@ -138,3 +138,8 @@ Reason: the title is now "Evaluating XGBoost with SHAP ...". The supervisor aske
 - **Riwayat sesi**: the history table shows the model of each saved session (model_KEK, model_Hb; "tidak tercatat" for sessions saved before algorithm names were stored). A session computed with a different model than the current one is flagged with a prompt to recompute. Recomputing stores the current algorithm names.
 - **Bug fix found by the new history test**: the history page crashed as soon as one session existed, because pyarrow 26.0.0 (pulled in by streamlit, not pinned, installed 2026-10-14) refuses NumPy 1.26. It had gone unnoticed because the database was always empty. pyarrow pinned to 18.1.0 in requirements.txt, installed with a constraints file: no other package changed. The modelling pipeline does not use pyarrow.
 - Verified: 299 tests pass, including both pages rendered with the real artifacts and a temporary database; `streamlit run app/Skrining.py` serves both pages. The real database stays empty.
+
+## 2026-10-28 (full report for the paper)
+
+- **experiments/15_paper_report.py** writes results/paper_full_report.md: methods, results (cohort, canaries, hypothesis verdicts, all-model metrics, referral burden, baseline and boosting comparisons, cost, SHAP eligibility and selection, SHAP rankings and stability, feature selection frequency, exploratory analyses, calibration, intervals, sensitivity analyses), discussion points, limitations, reproducibility and appendices. Every number is read from the result tables; nothing is typed by hand. Prose is a draft for the author.
+- The cohort table is computed from all eligible records (396 Hb, 410 CED). reports/tables/e01 (n = 334) describes the retired hold-out design and is not used.

@@ -1,0 +1,9 @@
+label,rule_applied,hypothesis,component,criterion,rule,point,ci_low,ci_high,ci_level,p_one_sided,outcome,verdict,holm_order,holm_p_value
+"exploratory, post hoc",loose plus name match (6 records),P1_anemia_screening,sensitivity,>= 0.7,point_and_ci,0.6871,0.5722,0.7967,0.975,0.5263,inconclusive,not_supported,1.0,0.8431
+"exploratory, post hoc",loose plus name match (6 records),P1_anemia_screening,specificity,>= 0.4,point_and_ci,0.3536,0.2938,0.4145,0.975,0.8431,inconclusive,not_supported,1.0,0.8431
+"exploratory, post hoc",loose plus name match (6 records),P1_anemia_screening,auc_roc,> 0.5,ci_lower_bound,0.5302,0.453,0.6072,0.975,0.2582,not_met,not_supported,1.0,0.8431
+"exploratory, post hoc",loose plus name match (6 records),P2_ced_classification,auc_roc,>= 0.7,point_and_ci,0.7698,0.7083,0.8268,0.975,0.0068,pass,not_supported,2.0,0.9995
+"exploratory, post hoc",loose plus name match (6 records),P2_ced_classification,auc_roc,>= 0.5,ci_lower_bound,0.7698,0.7083,0.8268,0.975,0.0005,met,not_supported,2.0,0.9995
+"exploratory, post hoc",loose plus name match (6 records),P2_ced_classification,auc_roc difference vs logistic_regression,>= 0.03,point_and_ci,-0.0224,-0.0519,0.0073,0.975,0.9995,fail,not_supported,2.0,0.9995
+"exploratory, post hoc",loose plus name match (6 records),S1_hb_vs_mean,mae reduction vs dummy_mean,>= 0.1,point_and_ci,0.0014,-0.022,0.0239,0.95,1.0,fail,not_supported,,1.0
+"exploratory, post hoc",loose plus name match (6 records),S2_hb_vs_ridge,mae reduction vs ridge,>= 0.05,point_and_ci,0.0034,-0.0182,0.025,0.95,0.9998,fail,not_supported,,0.9998

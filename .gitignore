@@ -17,3 +17,11 @@ results/checkpoints/
 results/logs/
 results/exploratory/x02_dedup_runs/
 archive/holdout_design_2026-10-14/holdout_split.json
+# Kept locally, not published in the repository (2026-10-28)
+docs/
+archive/
+results/console/
+results/folds/
+reports/tables/
+results/exploratory/*_console.txt
+results/tables/a0*

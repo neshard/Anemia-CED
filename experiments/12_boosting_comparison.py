@@ -43,6 +43,7 @@ from src.protocol_stats import (  # noqa: E402
     summary_table,
 )
 from src.runs import load_folds, load_oof, save_result_table  # noqa: E402
+from src.utils import resolve_path  # noqa: E402
 
 config, hyp = start("12_boosting_comparison")
 assert hyp is not None
@@ -63,14 +64,14 @@ TARGETS = {
             "forest": ["auc_roc", "pr_auc", "brier"], "box": ["auc_roc", "brier"]},
 }
 LABELS = {"xgboost": "XGBoost", "gbm": "GBM", "lightgbm": "LightGBM", "catboost": "CatBoost", "adaboost": "AdaBoost"}
-FIG = ROOT / "results" / "figures"
+FIG = resolve_path(config, "results_dir") / "figures"
 FIG.mkdir(parents=True, exist_ok=True)
 NOTE = "Descriptive comparison, no verdict. Hypotheses P1, P2, S1 and S2 concern XGBoost only."
 written: list[str] = []
 
 
 def save(df: pd.DataFrame, name: str) -> None:
-    written.append(str(save_result_table(df, name, config).relative_to(ROOT)))
+    written.append(str(save_result_table(df, name, config)))
 
 
 def quantity(metric: str) -> str:
@@ -216,7 +217,7 @@ for target, t in TARGETS.items():
     fig.tight_layout()
     fig.savefig(FIG / f"m_fig01_forest_paired_differences_{target}.png", dpi=300, facecolor="white")
     plt.close(fig)
-    written.append(f"results/figures/m_fig01_forest_paired_differences_{target}.png")
+    written.append(str(FIG / f"m_fig01_forest_paired_differences_{target}.png"))
 
     fig, axes = plt.subplots(1, len(t["box"]), figsize=(4.2 * len(t["box"]), 3.0))
     for ax, metric in zip(axes, t["box"], strict=True):
@@ -234,7 +235,7 @@ for target, t in TARGETS.items():
     fig.tight_layout()
     fig.savefig(FIG / f"m_fig02_boxplot_repetitions_{target}.png", dpi=300, facecolor="white")
     plt.close(fig)
-    written.append(f"results/figures/m_fig02_boxplot_repetitions_{target}.png")
+    written.append(str(FIG / f"m_fig02_boxplot_repetitions_{target}.png"))
 
 print(wide.drop(columns="note").round(4).to_string(index=False))
 print(diffs[diffs["primary_metric"]][["target", "versus", "metric", "quantity", "point", "ci_low", "ci_high",

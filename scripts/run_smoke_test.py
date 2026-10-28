@@ -1,7 +1,7 @@
 """End-to-end smoke run of the experiment scripts on SYNTHETIC data.
 
-Purpose: prove that scripts 00 and 03 to 07 run from start to finish without
-producing any real result. Running them on the real data would show test
+Purpose: prove that scripts 00, 02 to 09 and 12 to 14 run from start to finish
+on data/synthetic/synthetic_dataset.csv without producing any real result. Running them on the real data would show test
 results before config/hypotheses.yaml is locked.
 
 Everything (fake CSV, config copy, split, artifacts, tables, figures) goes
@@ -37,8 +37,13 @@ SCRIPTS = [
     "06_exploratory.py",
     "07_sensitivity.py",
     "08_evaluation_and_report.py",
+    "12_boosting_comparison.py",
+    "13_shap_boosting.py",
+    "14_select_final_model.py",
     "09_final_models.py",
 ]
+# Fictitious records in the raw export format, shipped with the code (no real woman).
+SYNTHETIC = ROOT / "data" / "synthetic" / "synthetic_dataset.csv"
 
 
 def main(out_dir: Path) -> None:
@@ -46,8 +51,11 @@ def main(out_dir: Path) -> None:
     base = load_config(ROOT / "config" / "config.yaml")
     cfg = copy.deepcopy(base)
 
-    raw = out_dir / "synthetic_dataset.csv"
-    synthetic_raw_frame(cfg, n=400, seed=11).to_csv(raw, sep=cfg["data"]["csv_sep"], encoding=cfg["data"]["csv_encoding"], index=False)
+    raw = SYNTHETIC
+    if not raw.exists():  # regenerate the shipped file (same generator, size and seed)
+        raw.parent.mkdir(parents=True, exist_ok=True)
+        synthetic_raw_frame(cfg, n=400, seed=11).to_csv(raw, sep=cfg["data"]["csv_sep"], encoding=cfg["data"]["csv_encoding"],
+                                                       index=False)
 
     cfg["project"]["smoke_test"] = True
     cfg["data"]["expected_row_count"] = None

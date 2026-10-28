@@ -1,3 +1,0 @@
-model,target,n_train,n_test,n_total
-hb_model,hb_target,316,80,396
-ced_model,ced,328,82,410

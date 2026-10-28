@@ -45,7 +45,7 @@ written: list[str] = []
 
 
 def save(table: pd.DataFrame, name: str) -> None:
-    written.append(str(save_result_table(table, name, config).relative_to(ROOT)))
+    written.append(str(save_result_table(table, name, config)))
 
 
 # %% Fold models per candidate

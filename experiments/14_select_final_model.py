@@ -24,7 +24,7 @@ from _common import ROOT, start
 from src.model_selection import hb_explanation_gate, load_rule, select_model
 from src.protocol_stats import hb_metrics, paired_bootstrap
 from src.runs import load_folds, load_oof, save_result_table
-from src.utils import library_versions
+from src.utils import library_versions, resolve_path
 
 config, hyp = start("14_select_final_model")
 assert hyp is not None
@@ -32,7 +32,7 @@ rule = load_rule(require_locked=not config["project"].get("smoke_test"))
 # The superseded version 1 rule (commit 0cc4098) is applied side by side for transparency only.
 RULE_V1 = {**rule, "choice": "equivalence_group_preferred", "preferred": "xgboost"}
 CANDS = list(rule["candidates"])
-tables = ROOT / "results" / "tables"
+tables = resolve_path(config, "results_dir") / "tables"
 metrics = {"hb": pd.read_csv(tables / "m01_hb_boosting_metrics.csv"), "ced": pd.read_csv(tables / "m02_ced_boosting_metrics.csv")}
 pairs = pd.read_csv(tables / "m04_pairwise_primary_metric_differences.csv")
 for target, seed in rule["paired_bootstrap_seed"].items():
@@ -92,7 +92,7 @@ selection = {
 }
 selection["hb"]["explanation_gate"] = {k: gate[k] for k in ("point", "ci_low", "ci_high", "ci_level", "outcome", "verdict",
                                                              "hb_explanation_enabled")}
-path = ROOT / "artifacts" / "model_selection.json"
+path = resolve_path(config, "artifacts_dir") / "model_selection.json"
 path.parent.mkdir(parents=True, exist_ok=True)
 path.write_text(json.dumps(selection, indent=2, default=str), encoding="utf-8")
 print(f"Saved {path}")

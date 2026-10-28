@@ -171,7 +171,11 @@ def test_advice_rules() -> None:
         assert "—" not in m and ";" not in m and "menyebabkan" not in m
 
 
-REAL_ARTIFACTS = (PROJECT_ROOT / "artifacts" / "final_ced_xgboost.joblib").exists()
+_FINAL = PROJECT_ROOT / "artifacts" / "final_models.json"
+# Real models are present when every artifact named in final_models.json exists (whatever algorithm was selected).
+REAL_ARTIFACTS = _FINAL.exists() and all(
+    (PROJECT_ROOT / m.get("artifact", f"artifacts/final_{t}_xgboost.joblib")).exists()
+    for t, m in json.loads(_FINAL.read_text(encoding="utf-8")).items())
 needs_real = pytest.mark.skipif(not REAL_ARTIFACTS, reason="final model artifacts not present")
 
 

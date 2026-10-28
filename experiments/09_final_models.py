@@ -93,7 +93,7 @@ for target, models in (("hb", HB_MODELS), ("ced", CED_MODELS)):
     if target == "hb":
         gate = selection["hb"].get("explanation_gate", {}) if selection else {}
         record["hb_explanation_enabled"] = bool(gate.get("hb_explanation_enabled", False))
-    joblib.dump(pipe, ROOT / record["artifact"])
+    joblib.dump(pipe, artifacts / f"final_{target}_{algorithm}.joblib")  # configured dir: a smoke run never touches artifacts/
     summary[target] = record
     print(json.dumps(record, indent=2, default=str))
     if not record["shap_additivity_passed"]:
